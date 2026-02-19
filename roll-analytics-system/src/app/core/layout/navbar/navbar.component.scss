@@ -1,0 +1,299 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--navbar-height);
+  background: linear-gradient(180deg, #0b1120 0%, #07091a 100%);
+  border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+  box-shadow: 0 4px 40px rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 1000;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mobile-menu-btn {
+  display: none;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  background: rgba(0, 212, 255, 0.05);
+  color: var(--text-secondary);
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+  .material-icons {
+    font-size: 22px;
+  }
+
+  &:hover {
+    border-color: rgba(0, 212, 255, 0.3);
+    color: var(--accent-cyan);
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.15);
+  }
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.logo-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 14px;
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: 10px;
+  background: rgba(0, 212, 255, 0.04);
+  text-decoration: none;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    border-color: rgba(0, 212, 255, 0.45);
+    box-shadow: 0 0 24px rgba(0, 212, 255, 0.12);
+  }
+}
+
+.logo-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  flex-shrink: 0;
+
+  &.client-icon {
+    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+    box-shadow: 0 0 12px rgba(0, 212, 255, 0.3);
+  }
+
+  &.hitachi-icon {
+    background: linear-gradient(135deg, var(--accent-red), #c53050);
+    font-size: 11px;
+    font-weight: 700;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+  }
+}
+
+.logo-text {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.navbar-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.title-icon {
+  font-size: 26px;
+  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.app-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  background: linear-gradient(90deg, #00d4ff 0%, #a78bfa 50%, #00d4ff 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 4s linear infinite;
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+.shift-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 7px 14px;
+  background: rgba(37, 99, 235, 0.08);
+  border: 1px solid rgba(37, 99, 235, 0.25);
+  border-radius: 10px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.shift-badge {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: white;
+  flex-shrink: 0;
+  font-family: 'Inter', sans-serif;
+}
+
+.shift-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.shift-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.shift-time {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent-cyan);
+  line-height: 1.2;
+}
+
+.navbar-divider {
+  width: 1px;
+  height: 28px;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    var(--border-color) 50%,
+    transparent 100%
+  );
+  flex-shrink: 0;
+}
+
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+  .material-icons {
+    font-size: 22px;
+  }
+
+  &:hover {
+    border-color: rgba(0, 212, 255, 0.4);
+    color: var(--accent-cyan);
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.15);
+  }
+}
+
+.badge-dot {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  background: var(--accent-red);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--accent-red);
+  animation: pulse-dot 1.5s ease-in-out infinite;
+}
+
+.notification-btn {
+  position: relative;
+}
+
+.badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  background: var(--accent-red);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--accent-red);
+  animation: pulse-dot 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: white;
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.25);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+
+  &:hover {
+    transform: scale(1.06);
+    box-shadow: 0 0 28px rgba(0, 212, 255, 0.35);
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar-center .app-title {
+    font-size: 14px;
+  }
+
+  .shift-card .shift-label {
+    display: none;
+  }
+
+  .logo-box.client-box,
+  .logo-box.hitachi-box {
+    display: none;
+  }
+
+  .mobile-menu-btn {
+    display: flex;
+  }
+}

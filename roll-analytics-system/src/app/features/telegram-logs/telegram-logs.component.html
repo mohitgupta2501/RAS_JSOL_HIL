@@ -1,0 +1,89 @@
+<div class="telegram-page">
+  <div class="breadcrumb">
+    <span class="breadcrumb-item muted">Home</span>
+    <span class="material-icons breadcrumb-sep">chevron_right</span>
+    <span class="breadcrumb-item active">Telegram Logs</span>
+  </div>
+
+  <div class="main-card">
+    <header class="card-header">
+      <div class="card-title-wrap">
+        <span class="material-icons card-icon">chat</span>
+        <h2 class="card-title">Telegram Log</h2>
+      </div>
+      <div class="pagination-wrap">
+        <button type="button" class="page-btn" (click)="prevPage()" [disabled]="currentPage === 1">
+          <span class="material-icons">chevron_left</span>
+          <span>Back</span>
+        </button>
+        <ng-container *ngFor="let p of pages">
+          <button
+            type="button"
+            class="page-btn"
+            [class.active]="currentPage === p"
+            (click)="goToPage(p)">
+            {{ p }}
+          </button>
+        </ng-container>
+        <button type="button" class="page-btn" (click)="nextPage()" [disabled]="currentPage === totalPages">
+          <span>Next</span>
+          <span class="material-icons">chevron_right</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="table-wrap">
+      <table class="logs-table">
+        <thead>
+          <tr>
+            <th (click)="sort('date')">Date & Time <span class="material-icons sort-icon">unfold_more</span></th>
+            <th (click)="sort('teleNo')">Tele.No <span class="material-icons sort-icon">unfold_more</span></th>
+            <th (click)="sort('teleDescription')">Tele.Description <span class="material-icons sort-icon">unfold_more</span></th>
+            <th (click)="sort('direction')">Direction <span class="material-icons sort-icon">unfold_more</span></th>
+            <th (click)="sort('outerSystem')">Outer System <span class="material-icons sort-icon">unfold_more</span></th>
+            <th (click)="sort('cmmMode')">Cmm Mode <span class="material-icons sort-icon">unfold_more</span></th>
+            <th (click)="sort('length')">Length <span class="material-icons sort-icon">unfold_more</span></th>
+            <th (click)="sort('status')">Status <span class="material-icons sort-icon">unfold_more</span></th>
+            <th (click)="sort('user')">User <span class="material-icons sort-icon">unfold_more</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of sorted; let i = index" [class.even]="i % 2 === 1">
+            <td class="col-datetime">{{ row.date }} | {{ row.time }}</td>
+            <td class="col-tele-no">{{ row.teleNo }}</td>
+            <td class="col-desc">{{ row.teleDescription }}</td>
+            <td class="col-direction" [class.send]="row.direction === 'Send'" [class.receive]="row.direction === 'Receive'">{{ row.direction }}</td>
+            <td class="col-outer"><span class="outer-chip">{{ row.outerSystem }}</span></td>
+            <td class="col-cmm">{{ row.cmmMode }}</td>
+            <td class="col-length">{{ row.length }}</td>
+            <td class="col-status">
+              <span class="status-badge" [class.sent]="row.status === 'Sent'" [class.received]="row.status === 'Received'">{{ row.status }}</span>
+            </td>
+            <td class="col-user">{{ row.user }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="action-bar">
+      <div class="action-left">
+        <button type="button" class="action-btn resend-btn">
+          <span class="material-icons">play_arrow</span>
+          <span>Resend</span>
+        </button>
+        <button type="button" class="action-btn rereceive-btn">
+          <span class="material-icons">replay</span>
+          <span>Re-Receive</span>
+        </button>
+      </div>
+      <button type="button" class="download-btn" (click)="downloadCsv()">
+        <span class="material-icons">download</span>
+        <span>Download</span>
+      </button>
+    </div>
+  </div>
+
+    <div class="accordion-body" *ngIf="!accordionCollapsed">
+      <p class="accordion-text">No alarm data to display.</p>
+    </div>
+</div>

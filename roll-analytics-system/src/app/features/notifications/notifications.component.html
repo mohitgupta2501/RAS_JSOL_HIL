@@ -1,0 +1,52 @@
+<div class="notifications-page">
+  <div class="breadcrumb">
+    <span class="breadcrumb-item muted">Home</span>
+    <span class="material-icons breadcrumb-sep">chevron_right</span>
+    <span class="breadcrumb-item active">Notifications</span>
+  </div>
+
+  <div class="page-header-card">
+    <div class="header-left">
+      <span class="material-icons header-icon">notifications</span>
+      <span class="header-title">Notifications</span>
+      <span class="unread-badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
+    </div>
+    <div class="header-actions">
+      <button class="btn-mark-read" (click)="markAllRead()">Mark All as Read</button>
+      <button class="btn-clear" (click)="clearAll()">Clear All</button>
+    </div>
+  </div>
+
+  <div class="filter-tabs">
+    <button
+      *ngFor="let f of filters"
+      type="button"
+      class="tab-btn"
+      [class.active]="activeFilter === f"
+      (click)="filterBy(f)">
+      {{ f }}
+    </button>
+  </div>
+
+  <div class="notifications-list">
+    <div class="empty-state" *ngIf="filteredNotifications.length === 0">
+      <span class="material-icons empty-icon">notifications_none</span>
+      <p>No notifications</p>
+    </div>
+    <div
+      class="notif-card"
+      *ngFor="let n of filteredNotifications"
+      [class.unread]="!n.read"
+      (click)="markRead(n)">
+      <div class="notif-dot" *ngIf="!n.read"></div>
+      <div class="notif-icon-wrap" [class]="'type-' + n.type">
+        <span class="material-icons">{{ n.icon }}</span>
+      </div>
+      <div class="notif-content">
+        <p class="notif-title">{{ n.title }}</p>
+        <p class="notif-msg">{{ n.msg }}</p>
+        <span class="notif-time">{{ n.time }}</span>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,63 @@
+/* Premium dark glassmorphism – Roll Analytics System */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import '../node_modules/ag-grid-community/styles/ag-grid.css';
+@import '../node_modules/ag-grid-community/styles/ag-theme-quartz-no-font.css';
+
+:root {
+  --bg-primary: #060b18;
+  --bg-card: #0f1a2e;
+  --bg-sidebar: #07091a;
+  --bg-navbar: #07091a;
+  --accent-blue: #2563eb;
+  --accent-cyan: #00d4ff;
+  --accent-purple: #7c3aed;
+  --accent-red: #ff4560;
+  --accent-green: #00e5a0;
+  --accent-orange: #ff8c42;
+  --text-primary: #e8f0fe;
+  --text-secondary: #7b90b8;
+  --text-muted: #3d5175;
+  --border-color: #1a2844;
+  --sidebar-width: 240px;
+  --sidebar-collapsed: 68px;
+  --navbar-height: 64px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% center;
+  }
+  100% {
+    background-position: -200% center;
+  }
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}

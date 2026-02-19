@@ -1,0 +1,74 @@
+<div class="alarms-page">
+  <div class="breadcrumb">
+    <span class="breadcrumb-item muted">Home</span>
+    <span class="material-icons breadcrumb-sep">chevron_right</span>
+    <span class="breadcrumb-item active">Alarms</span>
+  </div>
+
+  <div class="chips-row">
+    <div class="chip chip-total">
+      <span class="material-icons chip-icon">notifications</span>
+      <span class="chip-label">Total</span>
+      <span class="chip-count">{{ totalCount }}</span>
+    </div>
+    <div class="chip chip-high">
+      <span class="material-icons chip-icon">error</span>
+      <span class="chip-label">HIGH</span>
+      <span class="chip-count">{{ highCount }}</span>
+    </div>
+    <div class="chip chip-medium">
+      <span class="material-icons chip-icon">warning</span>
+      <span class="chip-label">MEDIUM</span>
+      <span class="chip-count">{{ mediumCount }}</span>
+    </div>
+    <div class="chip chip-low">
+      <span class="material-icons chip-icon">check_circle</span>
+      <span class="chip-label">LOW</span>
+      <span class="chip-count">{{ lowCount }}</span>
+    </div>
+  </div>
+
+  <div class="main-card">
+    <header class="card-header">
+      <div class="card-title-wrap">
+        <span class="material-icons card-icon">notifications_active</span>
+        <h2 class="card-title">Alarms</h2>
+      </div>
+      <button type="button" class="download-btn" (click)="downloadCsv()">
+        <span class="material-icons">download</span>
+        <span>Download</span>
+      </button>
+    </header>
+
+    <div class="table-wrap">
+      <table class="alarms-table">
+        <thead>
+          <tr>
+            <th (click)="sort('date')">Date & Time <span class="material-icons sort-icon">unfold_more</span></th>
+            <th (click)="sort('description')">Description <span class="material-icons sort-icon">unfold_more</span></th>
+            <th (click)="sort('parameter')">Parameter <span class="material-icons sort-icon">unfold_more</span></th>
+            <th (click)="sort('severity')">Severity <span class="material-icons sort-icon">unfold_more</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let alarm of sorted; let i = index" [class.even]="i % 2 === 1">
+            <td class="col-datetime">
+              <span class="material-icons datetime-icon">calendar_today</span>
+              {{ alarm.date }} &nbsp;|&nbsp; {{ alarm.time }}
+            </td>
+            <td class="col-desc">{{ alarm.description }}</td>
+            <td class="col-param">
+              <span class="param-chip">{{ alarm.parameter }}</span>
+            </td>
+            <td class="col-severity">
+              <span class="severity-badge" [class.high]="alarm.severity === 'HIGH'" [class.medium]="alarm.severity === 'MEDIUM'" [class.low]="alarm.severity === 'LOW'">
+                {{ alarm.severity }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/core/layout/layout/layout.component.scss"],
+  "sourcesContent": [".layout-body {\r\n  display: flex;\r\n  height: calc(100vh - 64px - 48px);\r\n  margin-top: 64px;\r\n}\r\n\r\n.main-content {\r\n  flex: 1;\r\n  overflow-y: auto;\r\n  overflow-x: hidden;\r\n  margin-left: var(--sidebar-width);\r\n  padding: 24px;\r\n  padding-bottom: 40px;\r\n  background: #060B18;\r\n  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);\r\n}\r\n\r\n.main-content.sidebar-collapsed {\r\n  margin-left: var(--sidebar-collapsed);\r\n}\r\n\r\n@media (max-width: 768px) {\r\n  .main-content,\r\n  .main-content.sidebar-collapsed {\r\n    margin-left: 0 !important;\r\n  }\r\n}\r\n"],
+  "mappings": ";AAAA,CAAA;AACE,WAAA;AACA,UAAA,KAAA,MAAA,EAAA,KAAA,EAAA;AACA,cAAA;;AAGF,CAAA;AACE,QAAA;AACA,cAAA;AACA,cAAA;AACA,eAAA,IAAA;AACA,WAAA;AACA,kBAAA;AACA,cAAA;AACA,cAAA,YAAA,KAAA,aAAA,GAAA,EAAA,CAAA,EAAA,GAAA,EAAA;;AAGF,CAXA,YAWA,CAAA;AACE,eAAA,IAAA;;AAGF,OAAA,CAAA,SAAA,EAAA;AACE,GAhBF;EAgBE,CAhBF,YAgBE,CALF;AAOI,iBAAA;;;",
+  "names": []
+}

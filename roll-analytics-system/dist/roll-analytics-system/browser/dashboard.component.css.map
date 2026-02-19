@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["dashboard.component.ts"],
+  "sourcesContent": [".page-placeholder { display: flex; justify-content: center; align-items: center; min-height: 300px; color: var(--text-primary); font-size: 1.5rem; }"],
+  "mappings": ";AAAA,CAAA;AAAoB,WAAA;AAAe,mBAAA;AAAyB,eAAA;AAAqB,cAAA;AAAmB,SAAA,IAAA;AAA4B,aAAA;;",
+  "names": []
+}
