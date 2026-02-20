@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { EChartsOption } from 'echarts';
+import { DatetimePickerComponent } from '../../shared/components/datetime-picker/datetime-picker.component';
 
 interface RollUsageData {
   cycleNo: number;
@@ -24,7 +25,7 @@ interface RollUsageData {
 @Component({
   selector: 'app-roll-details',
   standalone: true,
-  imports: [CommonModule, FormsModule, NgxEchartsModule],
+  imports: [CommonModule, FormsModule, NgxEchartsModule, DatetimePickerComponent],
   templateUrl: './roll-details.component.html',
   styleUrl: './roll-details.component.scss'
 })
@@ -33,7 +34,7 @@ export class RollDetailsComponent implements OnInit {
   showEditModal = false;
   openDropdown: string | null = null;
   
-  selectedMill = 'Mill 1';
+  selectedMill = 'E1';
   selectedRoll = 'WR';
   selectedPosition = 'Top';
   
@@ -41,9 +42,13 @@ export class RollDetailsComponent implements OnInit {
   readonly itemsPerPage = 5;
   readonly totalPages = 1;
 
-  readonly millOptions = ['Mill 1', 'Mill 2', 'Mill 3'];
-  readonly rollOptions = ['WR', 'IR', 'BR'];
+  readonly millOptions = ['E1', 'R1', 'E2', 'R2', 'F1e', 'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'PR1', 'PR2', 'PR3'];
+  readonly rollOptions = ['WR', 'BUR', 'EDGER', 'PINCH'];
   readonly positionOptions = ['Top', 'Bottom'];
+  readonly spallOptions = ['Yes', 'No'];
+  readonly crackOptions = ['Yes', 'No'];
+  readonly uniformCircOptions = ['Good', 'Average', 'Poor'];
+  readonly fitForUseOptions = ['Yes', 'No'];
 
   rollUsageData: RollUsageData[] = [
     {
@@ -128,7 +133,7 @@ export class RollDetailsComponent implements OnInit {
     }
   ];
 
-  editForm: RollUsageData = {
+  editForm: RollUsageData & { rollChangeTime: string } = {
     cycleNo: 0,
     plant: '',
     position: '',
@@ -142,7 +147,8 @@ export class RollDetailsComponent implements OnInit {
     spall: '',
     crack: '',
     uniformCirc: '',
-    fitForUse: ''
+    fitForUse: '',
+    rollChangeTime: ''
   };
 
   chartOptions: EChartsOption = {};
@@ -325,7 +331,7 @@ export class RollDetailsComponent implements OnInit {
 
   openEditModal(): void {
     const lastRow = this.rollUsageData[this.rollUsageData.length - 1];
-    this.editForm = { ...lastRow };
+    this.editForm = { ...lastRow, rollChangeTime: (lastRow as RollUsageData & { rollChangeTime?: string }).rollChangeTime ?? '' };
     this.showEditModal = true;
   }
 

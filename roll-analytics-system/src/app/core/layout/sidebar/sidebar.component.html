@@ -4,8 +4,12 @@
   [class.mobile-open]="layoutService.mobileSidebarOpen()">
   <header class="sidebar-header">
     <div class="header-left" *ngIf="!layoutService.sidebarCollapsed() || layoutService.mobileSidebarOpen()">
-      <span class="menu-dot"></span>
-      <span class="menu-label">MENU</span>
+      <div class="sidebar-brand">Roll Analytics System</div>
+      <div class="sidebar-divider"></div>
+      <div class="menu-row">
+        <span class="menu-dot"></span>
+        <span class="menu-label">MENU</span>
+      </div>
     </div>
     <button
       class="collapse-btn"
@@ -34,13 +38,6 @@
     </a>
   </nav>
 
-  <footer class="sidebar-footer" *ngIf="!layoutService.sidebarCollapsed() || layoutService.mobileSidebarOpen()">
-    <div class="status-row">
-      <span class="status-dot"></span>
-      <span class="status-text">System Online</span>
-    </div>
-    <span class="version-text">{{ version }}</span>
-  </footer>
 </aside>
 
 <div

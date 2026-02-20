@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["src/app/features/cost-analysis/cost-analysis.component.ts"],
-  "sourcesContent": ["import { Component } from '@angular/core';\r\n\r\n@Component({\r\n  selector: 'app-cost-analysis',\r\n  standalone: true,\r\n  template: '<div class=\"page-placeholder\">Cost Analysis</div>',\r\n  styles: ['.page-placeholder { display: flex; justify-content: center; align-items: center; min-height: 300px; color: var(--text-primary); font-size: 1.5rem; }']\r\n})\r\nexport class CostAnalysisComponent {}\r\n"],
-  "mappings": ";;;;;;;;;;;AAQM,IAAO,wBAAP,MAAO,uBAAqB;;;uBAArB,wBAAqB;IAAA;EAAA;;yEAArB,wBAAqB,WAAA,CAAA,CAAA,mBAAA,CAAA,GAAA,YAAA,MAAA,UAAA,CAAA,6BAAA,GAAA,OAAA,GAAA,MAAA,GAAA,QAAA,CAAA,CAAA,GAAA,kBAAA,CAAA,GAAA,UAAA,SAAA,+BAAA,IAAA,KAAA;AAAA,UAAA,KAAA,GAAA;AAHrB,QAAA,yBAAA,GAAA,OAAA,CAAA;AAA8B,QAAA,iBAAA,GAAA,eAAA;AAAa,QAAA,uBAAA;;;;;;6EAG3C,uBAAqB,EAAA,WAAA,yBAAA,UAAA,iEAAA,YAAA,EAAA,CAAA;AAAA,GAAA;",
-  "names": []
-}

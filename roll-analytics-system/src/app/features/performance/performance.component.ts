@@ -1,5 +1,6 @@
 import { Component, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 interface PerformanceData {
   parameter: string;
@@ -9,29 +10,37 @@ interface PerformanceData {
   v3: number;
 }
 
+const LOWER_IS_BETTER_PARAMS = [
+  'Total Breakdown',
+  'Avg Lead Time',
+  'Avg Cost per Km',
+  'Avg Purchase Cost'
+];
+
 @Component({
   selector: 'app-performance',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './performance.component.html',
   styleUrl: './performance.component.scss'
 })
 export class PerformanceComponent {
-  isMillStats = false; // default Supplier Stats
-  selectedMill = 'Mill 1';
+  isMillStats = false;
+  openDropdown: string | null = null;
+  selectedMill = 'E1';
   selectedSupplier = 'Supplier 1';
   selectedItem = 'Roll';
-  chokeOn = false;
+  selectedGrade = 'SS304';
   selectedRoll = 'WR';
   panelCollapsed = true;
 
   sortField: string = '';
   sortDir: 1 | -1 = 1;
-  openDropdown: string | null = null;
 
   readonly millOptions = ['E1', 'R1', 'E2', 'R2', 'F1e', 'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'PR1', 'PR2', 'PR3'];
   readonly supplierOptions = ['Supplier 1', 'Supplier 3', 'Supplier 5'];
   readonly itemOptions = ['Roll', 'Choke'];
+  readonly gradeOptions = ['SS304', 'SS316', 'MS', 'HSLA', 'IF Steel', 'API Grade'];
   readonly rollOptions = ['WR', 'BUR', 'Edger', 'Pinch'];
 
   readonly millStatsData: PerformanceData[] = [
@@ -128,63 +137,64 @@ export class PerformanceComponent {
   }
 
   getStars(val: number): string {
-    const n = Math.min(10, Math.max(0, Math.round(val)));
-    return '★'.repeat(n);
+    const stars = Math.round(val / 2);
+    const filled = '★'.repeat(Math.min(stars, 5));
+    const empty = '☆'.repeat(5 - Math.min(stars, 5));
+    return filled + empty;
   }
 
   getValueColor(row: PerformanceData, col: 'v1' | 'v2' | 'v3'): string {
-    if (row.parameter === 'Ratings') {
-      const v = Number(row[col]);
-      if (!Number.isFinite(v)) return '#E8F0FE';
-      if (v >= 9) return '#00E5A0';
-      if (v >= 8) return '#00D4FF';
-      if (v >= 7) return '#FF8C42';
-      return '#FF4560';
-    }
-    if (row.parameter === 'Total Breakdown') {
-      if (col === 'v1') return '#00E5A0'; // green = best (lower is better)
-      if (col === 'v2') return '#FF8C42'; // orange
-      if (col === 'v3') return '#FF4560'; // red = worst
+    const vals = [row.v1, row.v2, row.v3].map(Number).filter(v => !isNaN(v));
+    if (vals.length === 0) return '#E8F0FE';
+    const avg = vals.reduce((a, b) => a + b, 0) / vals.length;
+    const val = Number(row[col]);
+    if (!Number.isFinite(val)) return '#E8F0FE';
+    const upperBound = avg * 1.05;
+    const lowerBound = avg * 0.95;
+    const isLowerBetter = LOWER_IS_BETTER_PARAMS.includes(row.parameter);
+
+    if (isLowerBetter) {
+      if (val < lowerBound) return '#00E5A0';
+      if (val > upperBound) return '#FF4560';
+      return '#FF8C42';
     } else {
-      if (col === 'v1') return '#00D4FF'; // cyan
-      if (col === 'v2') return '#FF8C42'; // orange
-      if (col === 'v3') return '#FF8C42'; // orange
+      if (val > upperBound) return '#00E5A0';
+      if (val < lowerBound) return '#FF4560';
+      return '#FF8C42';
     }
-    return '#E8F0FE';
   }
 
   toggleDropdown(name: string): void {
     this.openDropdown = this.openDropdown === name ? null : name;
   }
 
-  closeAllDropdowns(): void {
+  @HostListener('document:click')
+  closeAll(): void {
     this.openDropdown = null;
   }
 
-  selectMill(val: string): void {
-    this.selectedMill = val;
+  selectMill(opt: string): void {
+    this.selectedMill = opt;
     this.openDropdown = null;
   }
 
-  selectSupplier(val: string): void {
-    this.selectedSupplier = val;
+  selectSupplier(opt: string): void {
+    this.selectedSupplier = opt;
     this.openDropdown = null;
   }
 
-  selectItem(val: string): void {
-    this.selectedItem = val;
+  selectItem(opt: string): void {
+    this.selectedItem = opt;
     this.openDropdown = null;
   }
 
-  selectRoll(val: string): void {
-    this.selectedRoll = val;
+  selectGrade(opt: string): void {
+    this.selectedGrade = opt;
     this.openDropdown = null;
   }
 
-  @HostListener('document:click', ['$event'])
-  onDocClick(e: Event): void {
-    if (!(e.target as HTMLElement).closest('.custom-select')) {
-      this.openDropdown = null;
-    }
+  selectRoll(opt: string): void {
+    this.selectedRoll = opt;
+    this.openDropdown = null;
   }
 }

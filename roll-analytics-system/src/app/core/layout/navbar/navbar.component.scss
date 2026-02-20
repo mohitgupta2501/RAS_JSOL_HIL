@@ -15,6 +15,12 @@
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.logo-img {
+  height: 40px;      /* Control navbar logo height */
+  width: auto;       /* Maintain aspect ratio */
+  object-fit: contain;
+}
+
 .mobile-menu-btn {
   display: none;
   width: 40px;
@@ -113,7 +119,7 @@
 }
 
 .app-title {
-  font-size: 1.15rem;
+  font-size: 1.05rem;
   font-weight: 600;
   font-family: 'Inter', sans-serif;
   margin: 0;
@@ -123,6 +129,21 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
   animation: shimmer 4s linear infinite;
+}
+
+.app-acronym {
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.app-sep {
+  margin: 0 10px;
+  opacity: 0.75;
+}
+
+.app-page {
+  font-weight: 650;
+  letter-spacing: 0.2px;
 }
 
 .navbar-right {
@@ -282,6 +303,10 @@
 @media (max-width: 768px) {
   .navbar-center .app-title {
     font-size: 14px;
+  }
+
+  .app-sep {
+    margin: 0 8px;
   }
 
   .shift-card .shift-label {

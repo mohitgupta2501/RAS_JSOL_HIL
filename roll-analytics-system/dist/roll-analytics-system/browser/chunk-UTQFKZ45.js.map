@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["src/app/features/dashboard/dashboard.component.ts"],
-  "sourcesContent": ["import { Component } from '@angular/core';\r\n\r\n@Component({\r\n  selector: 'app-dashboard',\r\n  standalone: true,\r\n  template: '<div class=\"page-placeholder\">Dashboard</div>',\r\n  styles: ['.page-placeholder { display: flex; justify-content: center; align-items: center; min-height: 300px; color: var(--text-primary); font-size: 1.5rem; }']\r\n})\r\nexport class DashboardComponent {}\r\n"],
-  "mappings": ";;;;;;;;;;;AAQM,IAAO,qBAAP,MAAO,oBAAkB;;;uBAAlB,qBAAkB;IAAA;EAAA;;yEAAlB,qBAAkB,WAAA,CAAA,CAAA,eAAA,CAAA,GAAA,YAAA,MAAA,UAAA,CAAA,6BAAA,GAAA,OAAA,GAAA,MAAA,GAAA,QAAA,CAAA,CAAA,GAAA,kBAAA,CAAA,GAAA,UAAA,SAAA,4BAAA,IAAA,KAAA;AAAA,UAAA,KAAA,GAAA;AAHlB,QAAA,yBAAA,GAAA,OAAA,CAAA;AAA8B,QAAA,iBAAA,GAAA,WAAA;AAAS,QAAA,uBAAA;;;;;;6EAGvC,oBAAkB,EAAA,WAAA,sBAAA,UAAA,yDAAA,YAAA,EAAA,CAAA;AAAA,GAAA;",
-  "names": []
-}

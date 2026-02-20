@@ -3,7 +3,9 @@
   <div class="popup-header">
     <div class="popup-title">
       <span class="material-icons">notifications_active</span>
-      <span>Active Alarms</span>
+      <span class="footer-text">
+        Active Alarms
+      </span>
       <span class="total-badge">{{ alarms.length }}</span>
     </div>
     <div class="popup-chips">
@@ -61,10 +63,20 @@
 <div class="alarm-footer-bar" (click)="togglePopup()">
   <div class="footer-left">
     <span class="material-icons footer-alarm-icon">alarm</span>
+
+    <!-- ADD THIS LINE -->
+    <span class="footer-text">
+      Active Alarms ({{ alarms.length }})
+    </span>
+
     <span class="alarm-live-dot" *ngIf="alarms.length > 0"></span>
   </div>
+
   <div class="footer-right">
     <span class="footer-clock">{{ currentTime }}</span>
-    <span class="material-icons expand-icon" [class.rotated]="popupOpen">expand_less</span>
+    <span class="material-icons expand-icon"
+          [class.rotated]="popupOpen">
+      expand_less
+    </span>
   </div>
 </div>

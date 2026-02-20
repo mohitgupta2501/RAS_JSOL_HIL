@@ -10,6 +10,8 @@ export const routes: Routes = [
     children: [
       {
         path: 'dashboard',
+        title: 'Dashboard',
+        data: { icon: 'dashboard' },
         loadComponent: () =>
           import('./features/dashboard/dashboard.component').then(
             (m) => m.DashboardComponent
@@ -17,6 +19,8 @@ export const routes: Routes = [
       },
       {
         path: 'roll-details',
+        title: 'Roll Details',
+        data: { icon: 'settings' },
         loadComponent: () =>
           import('./features/roll-details/roll-details.component').then(
             (m) => m.RollDetailsComponent
@@ -24,6 +28,8 @@ export const routes: Routes = [
       },
       {
         path: 'mill-information',
+        title: 'Mill Information',
+        data: { icon: 'precision_manufacturing' },
         loadComponent: () =>
           import('./features/mill-information/mill-information.component').then(
             (m) => m.MillInformationComponent
@@ -31,6 +37,8 @@ export const routes: Routes = [
       },
       {
         path: 'telegram-logs',
+        title: 'Telegram Logs',
+        data: { icon: 'chat' },
         loadComponent: () =>
           import('./features/telegram-logs/telegram-logs.component').then(
             (m) => m.TelegramLogsComponent
@@ -38,6 +46,8 @@ export const routes: Routes = [
       },
       {
         path: 'alarms',
+        title: 'Alarms',
+        data: { icon: 'notifications_active' },
         loadComponent: () =>
           import('./features/alarms/alarms.component').then(
             (m) => m.AlarmsComponent
@@ -45,6 +55,8 @@ export const routes: Routes = [
       },
       {
         path: 'performance',
+        title: 'Performance',
+        data: { icon: 'analytics' },
         loadComponent: () =>
           import('./features/performance/performance.component').then(
             (m) => m.PerformanceComponent
@@ -52,13 +64,26 @@ export const routes: Routes = [
       },
       {
         path: 'cost-analysis',
+        title: 'Cost Analysis',
+        data: { icon: 'paid' },
         loadComponent: () =>
           import('./features/cost-analysis/cost-analysis.component').then(
             (m) => m.CostAnalysisComponent
           )
       },
       {
+        path: 'reports',
+        title: 'Reports',
+        data: { icon: 'summarize' },
+        loadComponent: () =>
+          import('./features/reports/reports.component').then(
+            (m) => m.ReportsComponent
+          )
+      },
+      {
         path: 'notifications',
+        title: 'Notifications',
+        data: { icon: 'notifications' },
         loadComponent: () =>
           import('./features/notifications/notifications.component').then(
             (m) => m.NotificationsComponent

@@ -8866,6 +8866,9 @@ input[class^=ag-][type=range]:disabled {
 html,
 body {
   height: 100%;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
 }
 body {
   font-family:
@@ -8875,6 +8878,172 @@ body {
     sans-serif;
   background-color: var(--bg-primary);
   color: var(--text-primary);
+}
+input[type=datetime-local],
+input[type=date],
+input[type=time] {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(0, 212, 255, 0.2) !important;
+  border-radius: 8px !important;
+  padding: 9px 12px !important;
+  color: #E8F0FE !important;
+  font-family: "Inter", sans-serif !important;
+  font-size: 13px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  outline: none !important;
+  cursor: pointer !important;
+  color-scheme: dark !important;
+}
+input[type=datetime-local]:focus,
+input[type=date]:focus,
+input[type=time]:focus {
+  border-color: #2563EB !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15) !important;
+}
+input[type=datetime-local]::-webkit-calendar-picker-indicator,
+input[type=date]::-webkit-calendar-picker-indicator,
+input[type=time]::-webkit-calendar-picker-indicator {
+  filter: invert(1) opacity(0.6) !important;
+  cursor: pointer !important;
+}
+input[type=datetime-local]::-webkit-datetime-edit,
+input[type=date]::-webkit-datetime-edit {
+  color: #E8F0FE !important;
+}
+input[type=datetime-local]::-webkit-datetime-edit-fields-wrapper,
+input[type=date]::-webkit-datetime-edit-fields-wrapper {
+  color: #E8F0FE !important;
+}
+.custom-select {
+  position: relative;
+  min-width: 140px;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.select-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: #0D1628;
+  border: 1px solid #1A2844;
+  border-radius: 10px;
+  color: #E8F0FE;
+  font-size: 13px;
+  font-family: "Inter", sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  gap: 8px;
+  min-height: 42px;
+}
+.select-trigger:hover {
+  border-color: rgba(0, 212, 255, 0.35);
+  background: #0F1A2E;
+}
+.custom-select.open .select-trigger {
+  border-color: #2563EB;
+  background: #0F1A2E;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  border-radius: 10px 10px 0 0;
+}
+.select-value {
+  flex: 1;
+  color: #E8F0FE;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.select-arrow {
+  font-size: 20px;
+  color: #7B90B8;
+  transition: transform 0.25s ease;
+  flex-shrink: 0;
+}
+.custom-select.open .select-arrow {
+  transform: rotate(180deg);
+  color: #00D4FF;
+}
+.select-options {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #0D1628;
+  border: 1px solid #2563EB;
+  border-top: none;
+  border-radius: 0 0 10px 10px;
+  overflow-y: auto;
+  max-height: 220px;
+  z-index: 9999;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7);
+  animation: dropFade 0.15s ease;
+}
+@keyframes dropFade {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.custom-select.open .select-options {
+  display: block;
+}
+.select-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 16px;
+  font-size: 13px;
+  color: #7B90B8;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  font-family: "Inter", sans-serif;
+}
+.select-option:last-child {
+  border-bottom: none;
+}
+.select-option:hover {
+  background: rgba(37, 99, 235, 0.12);
+  color: #E8F0FE;
+}
+.select-option.selected {
+  background: rgba(0, 212, 255, 0.08);
+  color: #00D4FF;
+  font-weight: 600;
+}
+.option-check {
+  font-size: 16px;
+  color: #00D4FF;
+}
+* {
+  scrollbar-width: thin !important;
+  scrollbar-color: #1e3a6e #0a1020 !important;
+}
+*::-webkit-scrollbar {
+  width: 6px !important;
+  height: 6px !important;
+}
+*::-webkit-scrollbar-track {
+  background: #0a1020 !important;
+  border-radius: 4px !important;
+}
+*::-webkit-scrollbar-thumb {
+  background: #1e3a6e !important;
+  border-radius: 4px !important;
+  transition: background 0.2s !important;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: #2563EB !important;
+}
+*::-webkit-scrollbar-corner {
+  background: #0a1020 !important;
 }
 
 /* angular:styles/global:styles */

@@ -28,7 +28,8 @@ export class SidebarComponent {
     { path: '/telegram-logs', label: 'Telegram Logs', icon: 'chat' },
     { path: '/alarms', label: 'Alarms', icon: 'notifications_active' },
     { path: '/performance', label: 'Performance', icon: 'speed' },
-    { path: '/cost-analysis', label: 'Cost Analysis', icon: 'paid' }
+    { path: '/cost-analysis', label: 'Cost Analysis', icon: 'paid' },
+    { path: '/reports', label: 'Reports', icon: 'summarize' }
   ];
 
   toggleSidebar(): void {

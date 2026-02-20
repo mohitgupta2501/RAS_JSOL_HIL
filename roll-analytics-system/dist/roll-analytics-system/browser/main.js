@@ -4,16 +4,14 @@ import {
   RouterOutlet,
   bootstrapApplication,
   provideRouter
-} from "./chunk-A4KBJKDG.js";
+} from "./chunk-P2O2KUUR.js";
 import {
   NgxEchartsModule
-} from "./chunk-WOREK7U3.js";
-import {
-  DOCUMENT
-} from "./chunk-ABWFYJAQ.js";
+} from "./chunk-WWKEGZW6.js";
 import {
   ANIMATION_MODULE_TYPE,
   ChangeDetectionScheduler,
+  DOCUMENT,
   Inject,
   Injectable,
   NgModule,
@@ -34,7 +32,7 @@ import {
   ɵɵdefineNgModule,
   ɵɵelement,
   ɵɵinject
-} from "./chunk-NI6J6SBZ.js";
+} from "./chunk-4FAZ62Q4.js";
 import {
   __objRest,
   __spreadValues
@@ -4575,39 +4573,47 @@ var NoopAnimationsModule = class _NoopAnimationsModule {
 var routes = [
   {
     path: "",
-    loadComponent: () => import("./chunk-QGBLVNXD.js").then((m) => m.LayoutComponent),
+    loadComponent: () => import("./chunk-WE7EJI2E.js").then((m) => m.LayoutComponent),
     children: [
       {
         path: "dashboard",
-        loadComponent: () => import("./chunk-UTQFKZ45.js").then((m) => m.DashboardComponent)
+        title: "Dashboard",
+        loadComponent: () => import("./chunk-ZRKUR6ER.js").then((m) => m.DashboardComponent)
       },
       {
         path: "roll-details",
-        loadComponent: () => import("./chunk-OUEXP3MT.js").then((m) => m.RollDetailsComponent)
+        title: "Roll Details",
+        loadComponent: () => import("./chunk-M7CQWFPY.js").then((m) => m.RollDetailsComponent)
       },
       {
         path: "mill-information",
-        loadComponent: () => import("./chunk-QE6IS3NL.js").then((m) => m.MillInformationComponent)
+        title: "Mill Information",
+        loadComponent: () => import("./chunk-R4YAOBIJ.js").then((m) => m.MillInformationComponent)
       },
       {
         path: "telegram-logs",
-        loadComponent: () => import("./chunk-G2D5TGXY.js").then((m) => m.TelegramLogsComponent)
+        title: "Telegram Logs",
+        loadComponent: () => import("./chunk-RUGYKTTB.js").then((m) => m.TelegramLogsComponent)
       },
       {
         path: "alarms",
-        loadComponent: () => import("./chunk-NS2VZLW6.js").then((m) => m.AlarmsComponent)
+        title: "Alarms",
+        loadComponent: () => import("./chunk-L327UBM4.js").then((m) => m.AlarmsComponent)
       },
       {
         path: "performance",
-        loadComponent: () => import("./chunk-JJNZINC5.js").then((m) => m.PerformanceComponent)
+        title: "Performance",
+        loadComponent: () => import("./chunk-LALZ3I2A.js").then((m) => m.PerformanceComponent)
       },
       {
         path: "cost-analysis",
-        loadComponent: () => import("./chunk-NJ4HPZCK.js").then((m) => m.CostAnalysisComponent)
+        title: "Cost Analysis",
+        loadComponent: () => import("./chunk-X5PSA4OR.js").then((m) => m.CostAnalysisComponent)
       },
       {
         path: "notifications",
-        loadComponent: () => import("./chunk-KLYKDEKG.js").then((m) => m.NotificationsComponent)
+        title: "Notifications",
+        loadComponent: () => import("./chunk-QI2VG6XW.js").then((m) => m.NotificationsComponent)
       },
       { path: "", redirectTo: "/dashboard", pathMatch: "full" }
     ]
