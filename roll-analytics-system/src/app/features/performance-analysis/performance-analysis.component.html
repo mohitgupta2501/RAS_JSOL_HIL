@@ -1,0 +1,254 @@
+<div class="perf-analysis-page">
+  <!-- Breadcrumb -->
+  <div class="breadcrumb">
+    <span class="breadcrumb-item muted">Home</span>
+    <span class="material-icons breadcrumb-sep">chevron_right</span>
+    <span class="breadcrumb-item active">Performance Analysis</span>
+  </div>
+
+  <!-- Filter bar -->
+  <div class="pa-filter-card">
+    <div class="pa-filter-heading">
+      <span class="title">Performance Analysis</span>
+      <span class="subtitle">Compare supplier performance across key KPIs</span>
+    </div>
+
+    <div class="pa-filter-groups">
+      <div class="filter-group">
+        <label class="filter-label">SELECT MILL</label>
+        <div
+          class="custom-select"
+          [class.open]="openDropdown === 'mill'"
+          (click)="$event.stopPropagation()">
+          <div class="select-trigger" (click)="toggleDropdown('mill')">
+            <span class="select-value">{{ selectedMill }}</span>
+            <span class="material-icons select-arrow">expand_more</span>
+          </div>
+          <div class="select-options">
+            <div
+              class="select-option"
+              *ngFor="let opt of millOptions"
+              [class.selected]="selectedMill === opt"
+              (click)="selectMill(opt)">
+              <span
+                class="option-check material-icons"
+                *ngIf="selectedMill === opt">
+                check
+              </span>
+              {{ opt }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label">SELECT ROLL</label>
+        <div
+          class="custom-select"
+          [class.open]="openDropdown === 'roll'"
+          (click)="$event.stopPropagation()">
+          <div class="select-trigger" (click)="toggleDropdown('roll')">
+            <span class="select-value">{{ selectedRoll }}</span>
+            <span class="material-icons select-arrow">expand_more</span>
+          </div>
+          <div class="select-options">
+            <div
+              class="select-option"
+              *ngFor="let opt of rollOptions"
+              [class.selected]="selectedRoll === opt"
+              (click)="selectRoll(opt)">
+              <span
+                class="option-check material-icons"
+                *ngIf="selectedRoll === opt">
+                check
+              </span>
+              {{ opt }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Supplier Performance Comparison (AG Grid) -->
+  <div class="card">
+    <div class="card-header">
+      <div class="left">
+        <span class="material-icons header-icon">table_chart</span>
+        <div class="texts">
+          <div class="title">Supplier Performance Comparison</div>
+          <div class="subtitle">
+            Transposed KPI view with color-coded best and worst values
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="grid-wrapper">
+        <ag-grid-angular
+          class="ag-theme-custom-dark supplier-perf-grid"
+          style="width:100%"
+          [rowData]="rowData"
+          [columnDefs]="columnDefs"
+          [defaultColDef]="defaultColDef"
+          [rowHeight]="56"
+          [headerHeight]="56"
+          [domLayout]="'autoHeight'"
+          [suppressHorizontalScroll]="false"
+          [suppressCellFocus]="true">
+        </ag-grid-angular>
+      </div>
+    </div>
+  </div>
+
+  <!-- Supplier-Grade Fitness Matrix -->
+  <div style="
+    background:linear-gradient(145deg,#0F1A2E,#0A1020);
+    border:1px solid rgba(0,212,255,0.1);
+    border-radius:14px;
+    margin-top:24px;
+    overflow:hidden;
+  ">
+    <!-- Header -->
+    <div style="
+      display:flex; align-items:center; gap:12px;
+      padding:14px 20px;
+      background:rgba(0,212,255,0.03);
+      border-bottom:1px solid rgba(0,212,255,0.08);
+    ">
+      <div style="
+        width:36px;height:36px;border-radius:10px;
+        background:rgba(0,212,255,0.12);
+        display:flex;align-items:center;justify-content:center;
+      ">
+        <span class="material-icons" style="color:#00D4FF;font-size:20px">people</span>
+      </div>
+      <div>
+        <div style="color:#E8F0FE;font-size:15px;font-weight:700">
+          Supplier-Grade Fitness Matrix
+        </div>
+        <div style="color:#3D5175;font-size:11px;margin-top:2px">
+          Rating 1.0–5.0 | Color coded by suitability
+        </div>
+      </div>
+    </div>
+
+    <!-- AG Grid -->
+    <ag-grid-angular
+      class="ag-theme-custom-dark matrix-ag-grid"
+      [rowData]="matrixRowData"
+      [columnDefs]="fitnessColDefs"
+      [defaultColDef]="matrixDefaultColDef"
+      [domLayout]="'autoHeight'"
+      [rowHeight]="76"
+      [headerHeight]="64"
+      [suppressCellFocus]="true"
+      [suppressHorizontalScroll]="true"
+      style="width:100%">
+    </ag-grid-angular>
+
+    <!-- Legend -->
+    <div style="
+      display:flex;align-items:center;gap:20px;flex-wrap:wrap;
+      padding:12px 20px;
+      border-top:1px solid rgba(255,255,255,0.05);
+    ">
+      <span style="display:flex;align-items:center;gap:6px">
+        <span style="width:8px;height:8px;border-radius:50%;
+                     background:#00E5A0;display:inline-block"></span>
+        <span style="color:#7B90B8;font-size:11px">Best ≥4.6</span>
+      </span>
+      <span style="display:flex;align-items:center;gap:6px">
+        <span style="width:8px;height:8px;border-radius:50%;
+                     background:#60A5FA;display:inline-block"></span>
+        <span style="color:#7B90B8;font-size:11px">Good 4.3–4.5</span>
+      </span>
+      <span style="display:flex;align-items:center;gap:6px">
+        <span style="width:8px;height:8px;border-radius:50%;
+                     background:#FF8C42;display:inline-block"></span>
+        <span style="color:#7B90B8;font-size:11px">Fair 4.0–4.2</span>
+      </span>
+      <span style="display:flex;align-items:center;gap:6px">
+        <span style="width:8px;height:8px;border-radius:50%;
+                     background:#FF4560;display:inline-block"></span>
+        <span style="color:#7B90B8;font-size:11px">Poor &lt;4.0</span>
+      </span>
+    </div>
+  </div>
+
+  <!-- Thinker Gauge Matrix -->
+  <div style="
+    background:linear-gradient(145deg,#0F1A2E,#0A1020);
+    border:1px solid rgba(167,139,250,0.1);
+    border-radius:14px;
+    margin-top:24px;
+    overflow:hidden;
+  ">
+    <!-- Header -->
+    <div style="
+      display:flex;align-items:center;gap:12px;
+      padding:14px 20px;
+      background:rgba(167,139,250,0.03);
+      border-bottom:1px solid rgba(167,139,250,0.08);
+    ">
+      <div style="
+        width:36px;height:36px;border-radius:10px;
+        background:rgba(167,139,250,0.12);
+        display:flex;align-items:center;justify-content:center;
+      ">
+        <span class="material-icons" style="color:#A78BFA;font-size:20px">analytics</span>
+      </div>
+      <div>
+        <div style="color:#E8F0FE;font-size:15px;font-weight:700">
+          Thinker Gauge Matrix
+        </div>
+        <div style="color:#3D5175;font-size:11px;margin-top:2px">
+          Performance gauge across thickness categories
+        </div>
+      </div>
+    </div>
+
+    <!-- AG Grid -->
+    <ag-grid-angular
+      class="ag-theme-custom-dark matrix-ag-grid"
+      [rowData]="matrixRowData"
+      [columnDefs]="thinkerColDefs"
+      [defaultColDef]="matrixDefaultColDef"
+      [domLayout]="'autoHeight'"
+      [rowHeight]="76"
+      [headerHeight]="64"
+      [suppressCellFocus]="true"
+      [suppressHorizontalScroll]="true"
+      style="width:100%">
+    </ag-grid-angular>
+
+    <!-- Legend (identical) -->
+    <div style="
+      display:flex;align-items:center;gap:20px;flex-wrap:wrap;
+      padding:12px 20px;
+      border-top:1px solid rgba(255,255,255,0.05);
+    ">
+      <span style="display:flex;align-items:center;gap:6px">
+        <span style="width:8px;height:8px;border-radius:50%;
+                     background:#00E5A0;display:inline-block"></span>
+        <span style="color:#7B90B8;font-size:11px">Best ≥4.6</span>
+      </span>
+      <span style="display:flex;align-items:center;gap:6px">
+        <span style="width:8px;height:8px;border-radius:50%;
+                     background:#60A5FA;display:inline-block"></span>
+        <span style="color:#7B90B8;font-size:11px">Good 4.3–4.5</span>
+      </span>
+      <span style="display:flex;align-items:center;gap:6px">
+        <span style="width:8px;height:8px;border-radius:50%;
+                     background:#FF8C42;display:inline-block"></span>
+        <span style="color:#7B90B8;font-size:11px">Fair 4.0–4.2</span>
+      </span>
+      <span style="display:flex;align-items:center;gap:6px">
+        <span style="width:8px;height:8px;border-radius:50%;
+                     background:#FF4560;display:inline-block"></span>
+        <span style="color:#7B90B8;font-size:11px">Poor &lt;4.0</span>
+      </span>
+    </div>
+  </div>
+</div>
+

@@ -23,19 +23,35 @@
   </header>
 
   <nav class="sidebar-nav">
-    <a
-      *ngFor="let item of menuItems"
-      [routerLink]="item.path"
-      routerLinkActive="active"
-      [routerLinkActiveOptions]="{ exact: true }"
-      class="nav-item"
-      (click)="onNavClick()"
-      [attr.title]="layoutService.sidebarCollapsed() ? item.label : null">
-      <span class="nav-icon-wrap">
-        <span class="material-icons nav-icon">{{ item.icon }}</span>
-      </span>
-      <span class="nav-label">{{ item.label }}</span>
-    </a>
+    <ng-container *ngFor="let item of menuItems; let first = first">
+      <a
+        [routerLink]="item.path"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="nav-item"
+        (click)="onNavClick()"
+        [attr.title]="layoutService.sidebarCollapsed() ? item.label : null">
+        <span class="nav-icon-wrap">
+          <span class="material-icons nav-icon">{{ item.icon }}</span>
+        </span>
+        <span class="nav-label">{{ item.label }}</span>
+      </a>
+
+      <!-- Inventory menu item directly after Home -->
+      <a
+        *ngIf="first"
+        routerLink="/inventory"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="nav-item"
+        (click)="onNavClick()"
+        [attr.title]="layoutService.sidebarCollapsed() ? 'Inventory' : null">
+        <span class="nav-icon-wrap">
+          <span class="material-icons nav-icon">inventory_2</span>
+        </span>
+        <span class="nav-label">Inventory</span>
+      </a>
+    </ng-container>
   </nav>
 
 </aside>

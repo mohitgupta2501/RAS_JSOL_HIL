@@ -13,7 +13,7 @@
       [(ngModel)]="searchQuery"
     />
     <div class="filter-right">
-      <div class="filter-group">
+      <!-- <div class="filter-group">
         <label class="filter-label">SELECT ITEM</label>
         <div class="custom-select" [class.open]="openDropdown === 'item'" (click)="$event.stopPropagation()">
           <div class="select-trigger" (click)="toggleDropdown('item')">
@@ -27,10 +27,10 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
 
       <div class="filter-group">
-        <label class="filter-label">SELECT LOCATION</label>
+        <label class="filter-label">SELECT STAND</label>
         <div class="custom-select" [class.open]="openDropdown === 'location'" (click)="$event.stopPropagation()">
           <div class="select-trigger" (click)="toggleDropdown('location')">
             <span class="select-value">{{ selectedLocation }}</span>

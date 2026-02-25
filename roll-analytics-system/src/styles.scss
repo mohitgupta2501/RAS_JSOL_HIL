@@ -1,4 +1,8 @@
 /* Premium dark glassmorphism – Roll Analytics System */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import '../node_modules/ag-grid-community/styles/ag-grid.css';
 @import '../node_modules/ag-grid-community/styles/ag-theme-quartz-no-font.css';
@@ -232,4 +236,276 @@ input[type="date"]::-webkit-datetime-edit-fields-wrapper {
 
 *::-webkit-scrollbar-corner {
   background: #0a1020 !important;
+}
+
+@keyframes progressPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes shimmerMove {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes shimBar {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes pulseBar {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.75;
+  }
+}
+
+.bar-shimmer {
+  animation: barShimmer 2s linear infinite !important;
+}
+
+@keyframes barShimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.ag-theme-custom-dark {
+  --ag-background-color: #0f1a2e;
+  --ag-header-background-color: #0a1428;
+  --ag-odd-row-background-color: rgba(0, 0, 0, 0.15);
+  --ag-row-hover-color: rgba(37, 99, 235, 0.08);
+  --ag-border-color: rgba(255, 255, 255, 0.06);
+  --ag-header-foreground-color: #3d5175;
+  --ag-foreground-color: #e8f0fe;
+  --ag-font-family: 'Inter', sans-serif;
+  --ag-font-size: 13px;
+  --ag-row-border-color: rgba(255, 255, 255, 0.04);
+  --ag-selected-row-background-color: rgba(37, 99, 235, 0.12);
+  --ag-column-hover-color: rgba(0, 212, 255, 0.04);
+  --ag-header-column-separator-color: rgba(255, 255, 255, 0.06);
+}
+
+.ag-theme-custom-dark .ag-header-cell-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+
+.ag-theme-custom-dark .center-header .ag-header-cell-label {
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+.ag-theme-custom-dark .center-cell {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.ag-theme-custom-dark .ag-header-group-cell-label {
+  justify-content: center !important;
+  text-align: center !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  color: #00d4ff;
+  letter-spacing: 1.5px !important;
+  text-transform: uppercase !important;
+}
+
+.ag-theme-custom-dark
+  .ag-sort-indicator-container {
+  display: none !important;
+}
+
+.ag-theme-custom-dark
+  .ag-header-cell-menu-button {
+  display: none !important;
+}
+
+.ag-theme-custom-dark
+  .ag-header-cell-sortable {
+  cursor: default !important;
+}
+
+.ag-theme-custom-dark
+  .ag-header-label-icon {
+  display: none !important;
+}
+
+.ag-theme-custom-dark
+  .cycle-group-header
+  .ag-header-group-cell-label,
+.ag-theme-custom-dark
+  .cumul-group-header
+  .ag-header-group-cell-label {
+  justify-content: center !important;
+  width: 100% !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  letter-spacing: 1.5px !important;
+  text-transform: uppercase !important;
+}
+
+.ag-theme-custom-dark
+  .cycle-group-header
+  .ag-header-group-cell-label {
+  color: #00D4FF !important;
+  justify-content: center !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  letter-spacing: 1.5px !important;
+  text-transform: uppercase !important;
+  width: 100% !important;
+}
+
+.ag-theme-custom-dark
+  .cumul-group-header
+  .ag-header-group-cell-label {
+  color: #00D4FF !important;
+  justify-content: center !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  letter-spacing: 1.5px !important;
+  text-transform: uppercase !important;
+  width: 100% !important;
+}
+
+.ag-theme-custom-dark .ag-row {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  transition: background 0.15s ease;
+}
+
+.ag-theme-custom-dark .ag-cell {
+  display: flex;
+  align-items: center;
+  border-right: 1px solid rgba(255, 255, 255, 0.03);
+  overflow: visible !important;
+}
+
+.ag-theme-custom-dark .ag-cell.center-cell {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+.ag-theme-custom-dark .ag-sort-indicator-icon {
+  color: #3D5175 !important;
+  opacity: 1 !important;
+}
+
+.ag-theme-custom-dark .ag-sort-ascending-icon,
+.ag-theme-custom-dark .ag-sort-descending-icon {
+  color: #00D4FF !important;
+}
+
+.ag-theme-custom-dark .ag-sort-none-icon {
+  color: #3D5175 !important;
+  display: flex !important;
+}
+
+.ag-theme-custom-dark .ag-header-cell-sorted-asc
+  .ag-sort-indicator-icon,
+.ag-theme-custom-dark .ag-header-cell-sorted-desc
+  .ag-sort-indicator-icon {
+  color: #00D4FF !important;
+}
+
+.ag-theme-custom-dark
+  .col-header-default .ag-header-cell-label {
+  color: #7B90B8 !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 1.2px !important;
+  text-transform: uppercase !important;
+}
+
+.ag-theme-custom-dark
+  .col-header-white .ag-header-cell-label {
+  color: #FFFFFF !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 1.2px !important;
+  text-transform: uppercase !important;
+}
+
+.ag-theme-custom-dark
+  .col-header-cycle .ag-header-cell-label {
+  color: rgba(96,165,250,0.8) !important;
+  justify-content: center !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 1.2px !important;
+}
+
+.ag-theme-custom-dark
+  .col-header-cumul .ag-header-cell-label {
+  color: rgba(0,212,255,0.8) !important;
+  justify-content: center !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 1.2px !important;
+}
+
+.ag-theme-custom-dark
+  .col-header-campaign .ag-header-cell-label {
+  color: #60A5FA !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  letter-spacing: 1.2px !important;
+  justify-content: center !important;
+}
+
+.ag-theme-custom-dark .ag-paging-panel {
+  display: none !important;
+}
+
+.roll-id-link {
+  color: #00d4ff;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.roll-id-link:hover {
+  text-decoration: underline;
+  color: #60efff;
+  text-shadow: 0 0 8px rgba(0, 212, 255, 0.5);
+}
+
+.stand-badge {
+  background: rgba(167, 139, 250, 0.12);
+  border: 1px solid rgba(167, 139, 250, 0.25);
+  color: #a78bfa;
+  border-radius: 6px;
+  padding: 2px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }

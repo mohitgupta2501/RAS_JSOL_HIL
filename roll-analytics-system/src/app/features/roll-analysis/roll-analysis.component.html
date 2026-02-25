@@ -1,0 +1,329 @@
+<div class="roll-analysis-page">
+  <!-- Breadcrumb -->
+  <div class="breadcrumb">
+    <span class="breadcrumb-item muted">Home</span>
+    <span class="material-icons breadcrumb-sep">chevron_right</span>
+    <span class="breadcrumb-item active">Roll Analysis</span>
+  </div>
+
+  <!-- KPI Info Card -->
+  <div class="kpi-card">
+    <div class="kpi-header">
+      ROLL ANALYSIS
+    </div>
+    <div class="kpi-body">
+      <div class="kpi-grid">
+        <div class="kpi-item">
+          <div class="kpi-label">Roll ID</div>
+          <div class="kpi-value roll-id">WR123</div>
+        </div>
+        <div class="kpi-item">
+          <div class="kpi-label">Current Cycle</div>
+          <div class="kpi-value current-cycle">14</div>
+        </div>
+        <div class="kpi-item">
+          <div class="kpi-label">Curr. Cycle Length</div>
+          <div class="kpi-value curr-cycle-length">8.4 KM</div>
+        </div>
+        <div class="kpi-item">
+          <div class="kpi-label">Curr. Cycle Weight</div>
+          <div class="kpi-value curr-cycle-weight">1251 TON</div>
+        </div>
+        <div class="kpi-item">
+          <div class="kpi-label">Total Length</div>
+          <div class="kpi-value total-length">85.2 KM</div>
+        </div>
+        <div class="kpi-item">
+          <div class="kpi-label">Total Weight</div>
+          <div class="kpi-value total-weight">12500 TON</div>
+        </div>
+
+        <div class="kpi-item">
+          <div class="kpi-label">Current Dia</div>
+          <div class="kpi-value current-dia">600.00 mm</div>
+        </div>
+        <div class="kpi-item">
+          <div class="kpi-label">Min Dia</div>
+          <div class="kpi-value min-dia">550.00 mm</div>
+        </div>
+        <div class="kpi-item">
+          <div class="kpi-label">Supplier</div>
+          <div class="kpi-value supplier">Supplier3</div>
+        </div>
+        <div class="kpi-item">
+          <div class="kpi-label">Rating</div>
+          <div class="kpi-value rating">8.9/10</div>
+        </div>
+        <div class="kpi-item">
+          <div class="kpi-label">Delivery Date</div>
+          <div class="kpi-value delivery-date">2025-01-10</div>
+        </div>
+        <div class="kpi-item">
+          <div class="kpi-label">PO Price</div>
+          <div class="kpi-value po-price">1000 MINR</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Row -->
+  <div class="charts-grid">
+    <!-- Chart 1 -->
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <div class="chart-title">Diameter Consumption</div>
+      </div>
+      <div class="chart-card-body">
+        <div echarts [options]="diameterChartOptions" [autoResize]="true" class="chart"></div>
+      </div>
+    </div>
+
+    <!-- Chart 2 -->
+    <div class="chart-card">
+      <div class="chart-card-header">
+        <div class="chart-title">Campaign Utilization Trend</div>
+      </div>
+      <div class="chart-card-body">
+        <div echarts [options]="utilizationChartOptions" [autoResize]="true" class="chart"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Roll Usage Table (copied from Roll Details usage tab) -->
+  <div class="usage-section">
+    <div class="usage-header-row">
+      <div class="usage-title-row">
+        <span class="material-icons usage-icon">table_rows</span>
+        <span class="usage-title">Roll Usage</span>
+      </div>
+      <div class="usage-actions">
+        <button type="button" class="defect-btn" (click)="openDefectModal()">
+          <span class="material-icons">warning</span>
+          <span>Defect</span>
+        </button>
+        <button type="button" class="edit-btn" (click)="openEditModal()">
+          <span class="material-icons">edit</span>
+          <span>Edit Recent Cycle</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="ag-theme-custom-dark w-full" style="width: 100%">
+      <ag-grid-angular
+        [rowData]="rollUsageRowData"
+        [columnDefs]="rollUsageColumnDefs"
+        [defaultColDef]="defaultColDef"
+        [gridOptions]="gridOptions"
+        [rowHeight]="52"
+        [headerHeight]="44"
+        [domLayout]="'autoHeight'"
+        [suppressCellFocus]="true"
+        [pagination]="true"
+        [paginationPageSize]="10"
+        [suppressPaginationPanel]="true"
+        style="width: 100%">
+      </ag-grid-angular>
+    </div>
+  </div>
+
+  <!-- Edit Modal -->
+  <div class="edit-backdrop" *ngIf="showEditModal" (click)="closeEditModal()">
+    <div class="edit-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span class="material-icons">edit</span>
+          Edit Recent Cycle
+        </div>
+        <button type="button" (click)="closeEditModal()">
+          <span class="material-icons">close</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      <div class="form-field">
+        <label>ROLLED LENGTH</label>
+        <input
+          type="number"
+          placeholder="Enter length (km)"
+          [(ngModel)]="editCycleData.rolledLength" />
+      </div>
+      <div class="form-field">
+        <label>MAINT COST (MINR)</label>
+        <input
+          type="number"
+          placeholder="Enter cost in MINR"
+          [(ngModel)]="editCycleData.maintCost" />
+      </div>
+      <div class="form-field full-width">
+        <label>ROLL CHANGE TIME</label>
+        <app-datetime-picker
+          label="Roll Change Time"
+          [value]="editCycleData.rollChangeTime"
+          (valueChange)="editCycleData.rollChangeTime = $event">
+        </app-datetime-picker>
+      </div>
+      <div class="form-field full-width">
+        <label>REMARKS</label>
+        <textarea
+          rows="3"
+          placeholder="Enter remarks or notes..."
+          [(ngModel)]="editCycleData.remarks"></textarea>
+      </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="cancel-btn" (click)="closeEditModal()">Cancel</button>
+        <button type="button" class="save-btn" (click)="saveEdit()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Toast -->
+  <div class="success-toast" [class.visible]="showToast">
+    <span class="material-icons">check_circle</span>
+    <span>{{ toastMessage }}</span>
+  </div>
+
+  <!-- Defect Modal -->
+  <div
+    class="defect-backdrop"
+    *ngIf="showDefectModal"
+    (click)="openDefectDropdown = null; closeDefectModal()">
+    <div class="defect-modal" (click)="$event.stopPropagation()">
+      <div class="defect-header">
+        <div class="defect-title">Log Defect</div>
+        <button type="button" class="defect-close" (click)="closeDefectModal()">
+          <span class="material-icons">close</span>
+        </button>
+      </div>
+      <div class="defect-subtitle">Select defect status for roll WR123</div>
+
+      <div class="defect-grid">
+        <!-- Spall -->
+        <div class="defect-field">
+          <label>SPALL</label>
+          <div class="custom-select" [class.open]="openDefectDropdown === 'spall'">
+            <div
+              class="defect-select-trigger"
+              (click)="toggleDefectDropdown('spall', $event)">
+              <span>{{ defectForm.spall }}</span>
+              <span class="material-icons defect-arrow">expand_more</span>
+            </div>
+            <div
+              class="defect-options-panel"
+              *ngIf="openDefectDropdown === 'spall'">
+              <div
+                class="defect-option-item"
+                *ngFor="let opt of ['No', 'Yes']"
+                [class.selected]="defectForm.spall === opt"
+                (click)="selectDefectOption('spall', opt, $event)">
+                <span>{{ opt }}</span>
+                <span
+                  class="material-icons"
+                  *ngIf="defectForm.spall === opt">
+                  check
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Crack -->
+        <div class="defect-field">
+          <label>CRACK</label>
+          <div class="custom-select" [class.open]="openDefectDropdown === 'crack'">
+            <div
+              class="defect-select-trigger"
+              (click)="toggleDefectDropdown('crack', $event)">
+              <span>{{ defectForm.crack }}</span>
+              <span class="material-icons defect-arrow">expand_more</span>
+            </div>
+            <div
+              class="defect-options-panel"
+              *ngIf="openDefectDropdown === 'crack'">
+              <div
+                class="defect-option-item"
+                *ngFor="let opt of ['No', 'Yes']"
+                [class.selected]="defectForm.crack === opt"
+                (click)="selectDefectOption('crack', opt, $event)">
+                <span>{{ opt }}</span>
+                <span
+                  class="material-icons"
+                  *ngIf="defectForm.crack === opt">
+                  check
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Uniform Circulation -->
+        <div class="defect-field">
+          <label>UNIFORM CIRCULATION</label>
+          <div class="custom-select" [class.open]="openDefectDropdown === 'uniformCirculation'">
+            <div
+              class="defect-select-trigger"
+              (click)="toggleDefectDropdown('uniformCirculation', $event)">
+              <span>{{ defectForm.uniformCirculation }}</span>
+              <span class="material-icons defect-arrow">expand_more</span>
+            </div>
+            <div
+              class="defect-options-panel"
+              *ngIf="openDefectDropdown === 'uniformCirculation'">
+              <div
+                class="defect-option-item"
+                *ngFor="let opt of ['Good', 'Fair', 'Poor']"
+                [class.selected]="defectForm.uniformCirculation === opt"
+                (click)="selectDefectOption('uniformCirculation', opt, $event)">
+                <span>{{ opt }}</span>
+                <span
+                  class="material-icons"
+                  *ngIf="defectForm.uniformCirculation === opt">
+                  check
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fit For Use -->
+        <div class="defect-field">
+          <label>FIT FOR USE</label>
+          <div class="custom-select" [class.open]="openDefectDropdown === 'fitForUse'">
+            <div
+              class="defect-select-trigger"
+              (click)="toggleDefectDropdown('fitForUse', $event)">
+              <span>{{ defectForm.fitForUse }}</span>
+              <span class="material-icons defect-arrow">expand_more</span>
+            </div>
+            <div
+              class="defect-options-panel"
+              *ngIf="openDefectDropdown === 'fitForUse'">
+              <div
+                class="defect-option-item"
+                *ngFor="let opt of ['No', 'Yes']"
+                [class.selected]="defectForm.fitForUse === opt"
+                (click)="selectDefectOption('fitForUse', opt, $event)">
+                <span>{{ opt }}</span>
+                <span
+                  class="material-icons"
+                  *ngIf="defectForm.fitForUse === opt">
+                  check
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="defect-footer">
+        <button type="button" class="defect-cancel" (click)="closeDefectModal()">Cancel</button>
+        <button
+          type="button"
+          class="defect-save"
+          (click)="saveDefect()">
+          Save Defect
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+

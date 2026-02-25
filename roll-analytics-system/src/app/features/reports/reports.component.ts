@@ -13,7 +13,7 @@ import { DatetimePickerComponent } from '../../shared/components/datetime-picker
 })
 export class ReportsComponent implements OnInit {
   selectedFeature = 'ALARMS';
-  selectedFormat = 'PDF';
+  selectedFormat = 'CSV';
   fromDate = '';
   toDate = '';
   selectedParams: string[] = [];
@@ -171,7 +171,7 @@ export class ReportsComponent implements OnInit {
     this.selectedParams = [];
     this.fromDate = '';
     this.toDate = '';
-    this.selectedFormat = 'PDF';
+    this.selectedFormat = 'CSV';
     this.updateParameters();
   }
 }

@@ -44,7 +44,7 @@
           </div>
         </div>
 
-        <!-- FIELD 3 - SELECT PARAMETERS -->
+        <!-- FIELD 3 - SELECT PARAMETERS
         <div class="form-field">
           <label class="field-label">Select Parameters</label>
           <div class="select-actions">
@@ -65,19 +65,12 @@
               <span class="checkbox-label">{{ param }}</span>
             </label>
           </div>
-        </div>
+        </div> -->
 
         <!-- FIELD 4 - REPORT FORMAT -->
         <div class="form-field">
           <label class="field-label">Report Format</label>
           <div class="format-buttons">
-            <button
-              type="button"
-              class="format-btn"
-              [class.active]="selectedFormat === 'PDF'"
-              (click)="selectedFormat = 'PDF'">
-              PDF
-            </button>
             <button
               type="button"
               class="format-btn"
@@ -95,7 +88,7 @@
           </div>
         </div>
 
-        <!-- PREVIEW SECTION -->
+        <!-- PREVIEW SECTION
         <div class="preview-section" *ngIf="selectedParams.length > 0">
           <div class="preview-card">
             <span class="material-icons preview-icon">info</span>
@@ -107,7 +100,7 @@
               <div class="preview-row format-row">Format: {{ selectedFormat }}</div>
             </div>
           </div>
-        </div>
+        </div> -->
 
         <!-- DOWNLOAD BUTTON ROW -->
         <div class="download-row">
@@ -118,10 +111,6 @@
             (click)="downloadReport()">
             <span class="material-icons">download</span>
             Download Report
-          </button>
-          <button type="button" class="reset-btn" (click)="resetForm()">
-            <span class="material-icons">refresh</span>
-            Reset
           </button>
         </div>
       </form>

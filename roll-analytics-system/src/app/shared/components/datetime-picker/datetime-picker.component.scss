@@ -39,6 +39,7 @@
   flex: 1;
   font-size: 13px;
   color: #E8F0FE;
+  white-space: nowrap;
 }
 
 .dt-arrow {
@@ -56,7 +57,9 @@
   border: 1px solid #2563EB;
   border-radius: 12px;
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.8);
-  overflow: hidden;
+  max-height: 520px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .dt-header {

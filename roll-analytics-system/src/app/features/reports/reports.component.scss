@@ -34,7 +34,7 @@
   background: linear-gradient(145deg, #0F1A2E, #0A1020);
   border: 1px solid rgba(0, 212, 255, 0.1);
   border-radius: 14px;
-  overflow: hidden;
+  overflow: visible;
   padding: 0;
 }
 
@@ -87,6 +87,12 @@
   display: flex;
   align-items: center;
   gap: 12px;
+}
+
+app-datetime-picker {
+  display: block;
+  width: 260px;
+  flex: 0 0 260px;
 }
 
 .date-separator {

@@ -31,12 +31,26 @@
       <span class="badge" *ngIf="unreadCount > 0"></span>
     </a>
 
-    <div class="avatar" title="AD">
-      <span>AD</span>
+    <div class="user-menu-wrapper">
+      <button class="user-menu-trigger" (click)="toggleUserMenu()" type="button" aria-label="User menu">
+        <div class="avatar" [title]="currentUser?.name ?? 'User'">
+          <span>{{ (currentUser?.name ?? 'AD').slice(0, 2).toUpperCase() }}</span>
+        </div>
+      </button>
+      <div class="user-dropdown" *ngIf="userMenuOpen">
+        <div class="user-dropdown-header">
+          <span class="user-name">{{ currentUser?.name ?? 'User' }}</span>
+          <span class="user-email">{{ currentUser?.email }}</span>
+        </div>
+        <button type="button" class="user-dropdown-item" (click)="logout()">
+          <span class="material-icons">logout</span>
+          Logout
+        </button>
+      </div>
     </div>
-    
-      <a class="logo-box hitachi-box" href="#">
-        <img src="assets/images/Hitachi_Logo.jpeg" alt="Hitachi Logo" class="logo-img">
-      </a>
+
+    <a class="logo-box hitachi-box" href="#">
+      <img src="assets/images/Hitachi_Logo.jpeg" alt="Hitachi Logo" class="logo-img">
+    </a>
   </div>
 </nav>
