@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 export type Direction = 'Send' | 'Receive';
 export type Status = 'Sent' | 'Received';
@@ -20,7 +21,7 @@ export interface TelegramLog {
 @Component({
   selector: 'app-telegram-logs',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './telegram-logs.component.html',
   styleUrl: './telegram-logs.component.scss'
 })
@@ -29,8 +30,9 @@ export class TelegramLogsComponent {
   sortDir: 1 | -1 = 1;
   accordionCollapsed = true;
 
-  currentPage = 1;
-  readonly itemsPerPage = 11;
+  telegramCurrentPage = 1;
+  telegramPageSize = 10;
+  telegramTotalRows = 0;
 
   private readonly rawLogs: TelegramLog[] = [
     { date: '28/08/2025', time: '8:21 AM', teleNo: 'L001', teleDescription: 'Setup Data', direction: 'Send', outerSystem: 'L1', cmmMode: 'TCP/IP', length: 0, status: 'Sent', user: 'L2' },
@@ -50,12 +52,30 @@ export class TelegramLogsComponent {
     return this.rawLogs;
   }
 
-  get totalPages(): number {
-    return Math.max(1, Math.ceil(this.logs.length / this.itemsPerPage));
+  get telegramTotalPages(): number {
+    return Math.ceil(this.telegramTotalRows / this.telegramPageSize);
   }
 
-  get pages(): number[] {
-    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+  telegramGoToPage(page: number) {
+    if (page >= 1 && page <= this.telegramTotalPages) {
+      this.telegramCurrentPage = page;
+    }
+  }
+
+  telegramGetPageNumbers(): number[] {
+    const total = this.telegramTotalPages;
+    const current = this.telegramCurrentPage;
+    if (total <= 7) {
+      return Array.from({ length: total }, (_, i) => i + 1);
+    }
+    const pages: (number | string)[] = [1];
+    if (current > 3) pages.push(-1);
+    for (let i = Math.max(2, current - 1); i <= Math.min(total - 1, current + 1); i++) {
+      pages.push(i);
+    }
+    if (current < total - 2) pages.push(-1);
+    pages.push(total);
+    return pages as number[];
   }
 
   get sorted(): TelegramLog[] {
@@ -70,8 +90,8 @@ export class TelegramLogsComponent {
   }
 
   get pagedData(): TelegramLog[] {
-    const start = (this.currentPage - 1) * this.itemsPerPage;
-    return this.logs.slice(start, start + this.itemsPerPage);
+    const start = (this.telegramCurrentPage - 1) * this.telegramPageSize;
+    return this.logs.slice(start, start + this.telegramPageSize);
   }
 
   sort(field: keyof TelegramLog): void {
@@ -83,16 +103,8 @@ export class TelegramLogsComponent {
     }
   }
 
-  goToPage(n: number): void {
-    if (n >= 1 && n <= this.totalPages) this.currentPage = n;
-  }
-
-  nextPage(): void {
-    if (this.currentPage < this.totalPages) this.currentPage++;
-  }
-
-  prevPage(): void {
-    if (this.currentPage > 1) this.currentPage--;
+  constructor() {
+    this.telegramTotalRows = this.logs.length;
   }
 
   downloadCsv(): void {
@@ -110,5 +122,18 @@ export class TelegramLogsComponent {
     a.download = 'telegram_logs_export.csv';
     a.click();
     URL.revokeObjectURL(url);
+  }
+
+  onExportTelegram() {
+    const headers = Object.keys(this.logs[0] || {});
+    const rows = this.logs.map((r: any) => headers.map(h => r[h] ?? ''));
+    const csv = [headers, ...rows].map(r => r.join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `telegram-logs-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
   }
 }

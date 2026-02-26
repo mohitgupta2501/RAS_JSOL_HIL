@@ -1,12 +1,16 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
+import { AgGridAngular } from 'ag-grid-angular';
+import type { ColDef, ColGroupDef } from 'ag-grid-community';
 
 type ActiveType = 'rolls' | 'choke';
 
+type RollPos = 'T' | 'B' | 'OP' | 'DR';
+
 interface KpiCard {
-  id: 'rm' | 'f1f4' | 'f5f7' | 'ed' | 'pinch';
+  id: 'r1' | 'r2' | 'f1f4' | 'f5f7' | 'ed' | 'pinch';
   label: string;
   subLabel: string;
   types: string[];
@@ -24,7 +28,7 @@ interface KpiCard {
 
 interface RollRow {
   stand: string;
-  pos: 'T' | 'B' | 'OP' | 'DR';
+  standCategory: 'R1' | 'R2' | 'F1-F4' | 'F5-F7' | 'Edger' | 'Pinch';
   rollNo: string;
   diameter: number;
   matCode: 'SS' | 'FS' | 'HSS' | 'HICHR';
@@ -42,6 +46,25 @@ interface RollRow {
   rollChangeTime: string;
 }
 
+interface RollInventoryRow {
+  rollNo: string;
+  standCategory: string;
+  diameter: number;
+  materialCode: string;
+  initCrownMax: number;
+  initCrownMin: number;
+  equiCrownMax: number;
+  equiCrownMin: number;
+  grindType: string;
+  grindIndex: number;
+  shim: number;
+  totalWeight: number;
+  totalSlabs: number;
+  totalLength: number;
+  supplier: string;
+  rollGrindTime: string;
+}
+
 interface ChokeRow {
   chokeId: string;
   weight: number;
@@ -52,7 +75,7 @@ interface ChokeRow {
 
 interface EntryForm {
   stand: string;
-  pos: '' | 'T' | 'B' | 'OP' | 'DR';
+  pos: '' | RollPos;
   rollNo: string;
   diameter: number | null;
   matCode: '' | 'SS' | 'FS' | 'HSS' | 'HICHR';
@@ -74,28 +97,81 @@ interface EntryForm {
 @Component({
   selector: 'app-inventory',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, DatePipe],
+  imports: [CommonModule, FormsModule, RouterModule, DatePipe, AgGridAngular],
   templateUrl: './inventory.component.html',
   styleUrl: './inventory.component.scss'
 })
-export class InventoryComponent {
+export class InventoryComponent implements OnInit {
   private readonly router = inject(Router);
 
   activeType: ActiveType = 'rolls';
-  selectedKpi: KpiCard['id'] = 'rm';
 
   openEntryModal = false;
   showToast = false;
   openDropdown: 'rollType' | 'grindType' | null = null;
 
+  rollCurrentPage = 1;
+  rollPageSize = 10;
+  rollTotalRows = 0;
+
+  chokeCurrentPage = 1;
+  chokePageSize = 10;
+  chokeTotalRows = 0;
+
+  get rollTotalPages(): number {
+    return Math.ceil(this.rollTotalRows / this.rollPageSize);
+  }
+
+  get rollPaginatedData(): any[] {
+    const start = (this.rollCurrentPage - 1) * this.rollPageSize;
+    return this.rollInventoryRowData.slice(start, start + this.rollPageSize);
+  }
+
+  rollGoToPage(page: number) {
+    if (page >= 1 && page <= this.rollTotalPages) {
+      this.rollCurrentPage = page;
+    }
+  }
+
+  rollGetPageNumbers(): number[] {
+    const pages: number[] = [];
+    for (let i = 1; i <= this.rollTotalPages; i++) pages.push(i);
+    return pages;
+  }
+
+  get chokeTotalPages(): number {
+    return Math.ceil(this.chokeTotalRows / this.chokePageSize);
+  }
+
+  get chokePaginatedData(): any[] {
+    const start = (this.chokeCurrentPage - 1) * this.chokePageSize;
+    return this.chokeRowData.slice(start, start + this.chokePageSize);
+  }
+
+  chokeGoToPage(page: number) {
+    if (page >= 1 && page <= this.chokeTotalPages) {
+      this.chokeCurrentPage = page;
+    }
+  }
+
+  chokeGetPageNumbers(): number[] {
+    const pages: number[] = [];
+    for (let i = 1; i <= this.chokeTotalPages; i++) pages.push(i);
+    return pages;
+  }
+
+  min(a: number, b: number): number {
+    return Math.min(a, b);
+  }
+
   readonly kpiCards: KpiCard[] = [
     {
-      id: 'rm',
-      label: 'RM',
-      subLabel: 'Roughing Mill',
+      id: 'r1',
+      label: 'R1',
+      subLabel: 'Roughing\nStand 1',
       types: ['WR', 'BUR'],
-      wrCount: 4,
-      burCount: 4,
+      wrCount: 6,
+      burCount: 6,
       totalWeight: '24,500',
       totalLength: '165.2',
       accent: '#FF8C42',
@@ -104,9 +180,23 @@ export class InventoryComponent {
       barGradient: 'linear-gradient(90deg,#FF8C42,#FF6B00)'
     },
     {
+      id: 'r2',
+      label: 'R2',
+      subLabel: 'Roughing\nStand 2',
+      types: ['WR', 'BUR'],
+      wrCount: 6,
+      burCount: 8,
+      totalWeight: '24,500',
+      totalLength: '165.2',
+      accent: '#FFA500',
+      accentBg: 'rgba(255,165,0,0.12)',
+      accentBorder: 'rgba(255,165,0,0.3)',
+      barGradient: 'linear-gradient(90deg,#FFA500,#FF8C42)'
+    },
+    {
       id: 'f1f4',
       label: 'F1 – F4',
-      subLabel: 'Finishing Stands',
+      subLabel: 'Finishing\nStands',
       types: ['WR', 'BUR'],
       wrCount: 8,
       burCount: 8,
@@ -120,7 +210,7 @@ export class InventoryComponent {
     {
       id: 'f5f7',
       label: 'F5 – F7',
-      subLabel: 'Finishing Stands',
+      subLabel: 'Finishing\nStands',
       types: ['WR', 'BUR'],
       wrCount: 6,
       burCount: 6,
@@ -163,207 +253,652 @@ export class InventoryComponent {
     }
   ];
 
-  readonly rollData: RollRow[] = [
+  readonly rollInventoryColDefs: Array<ColDef | ColGroupDef> = [
     {
-      stand: 'F1E',
-      pos: 'OP',
-      rollNo: 'F1EOS06',
-      diameter: 600.0,
-      matCode: 'SS',
-      initCrownMax: '-',
-      initCrownMin: '-',
-      equiCrownMax: '-',
-      equiCrownMin: '-',
-      grindType: '-',
-      grindIndex: 0,
-      shim: 0,
-      accumWeight: 154_763,
-      accumSlabs: 6967,
-      accumLength: 415,
-      supplier: 'Supplier1',
-      rollChangeTime: '01/15 15:01'
+      headerName: 'ROLL NO.',
+      field: 'rollNo',
+      pinned: 'left',
+      width: 150,
+      lockPinned: true,
+      cellRenderer: (params: any) =>
+        `<span style="color:#00D4FF;font-weight:700;font-size:13px;cursor:pointer">${params.value}</span>`,
+      cellStyle: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }
     },
     {
-      stand: 'F1E',
-      pos: 'DR',
-      rollNo: 'F1EDS06',
-      diameter: 600.0,
-      matCode: 'SS',
-      initCrownMax: '-',
-      initCrownMin: '-',
-      equiCrownMax: '-',
-      equiCrownMin: '-',
-      grindType: '-',
-      grindIndex: 0,
-      shim: 0,
-      accumWeight: 154_763,
-      accumSlabs: 6967,
-      accumLength: 413,
-      supplier: 'Supplier1',
-      rollChangeTime: '01/15 15:01'
+      headerName: 'STAND CATEGORY',
+      field: 'standCategory',
+      width: 150,
+      cellRenderer: (params: any) => {
+        const val = params.value || '-';
+        if (val === '-') {
+          return `<span style="color:#3D5175;font-size:13px">-</span>`;
+        }
+        return `
+          <div style="display:flex;align-items:center;
+                      justify-content:center;height:100%">
+            <span style="
+              background: rgba(167,139,250,0.15);
+              color: #A78BFA;
+              border: 1px solid rgba(167,139,250,0.35);
+              border-radius: 8px;
+              padding: 4px 14px;
+              font-size: 11px;
+              font-weight: 700;
+              letter-spacing: 0.5px;
+              white-space: nowrap;
+            ">${val}</span>
+          </div>`;
+      },
+      cellStyle: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '0'
+      }
     },
     {
-      stand: 'F3',
-      pos: 'T',
-      rollNo: 'FB3FDOA01',
-      diameter: 1539.402,
-      matCode: 'FS',
-      initCrownMax: 0.3,
-      initCrownMin: 0.0,
-      equiCrownMax: 0.0,
-      equiCrownMin: 0.0,
-      grindType: 'FS',
-      grindIndex: 0,
-      shim: 70,
-      accumWeight: 46_382,
-      accumSlabs: 2015,
-      accumLength: 243,
-      supplier: 'Supplier2',
-      rollChangeTime: '02/06 19:15'
+      headerName: 'DIAMETER [MM]',
+      field: 'diameter',
+      width: 150,
+      cellStyle: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: '#E8F0FE',
+        fontSize: '13px'
+      }
     },
     {
-      stand: 'F3',
-      pos: 'B',
-      rollNo: 'FB3FDOA02',
-      diameter: 1540.358,
-      matCode: 'FS',
-      initCrownMax: 0.3,
-      initCrownMin: 0.0,
-      equiCrownMax: 0.0,
-      equiCrownMin: 0.0,
-      grindType: 'FS',
-      grindIndex: 0,
-      shim: 65,
-      accumWeight: 46_382,
-      accumSlabs: 2015,
-      accumLength: 243,
-      supplier: 'Supplier2',
-      rollChangeTime: '02/06 19:15'
+      headerName: 'MATERIAL CODE',
+      field: 'materialCode',
+      width: 140,
+      cellStyle: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: '#E8F0FE',
+        fontSize: '13px'
+      }
     },
     {
-      stand: 'F1',
-      pos: 'T',
-      rollNo: 'F1HSCMA03',
-      diameter: 766.731,
-      matCode: 'HSS',
-      initCrownMax: 0.0,
-      initCrownMin: 0.8,
-      equiCrownMax: 0.8,
-      equiCrownMin: -1.0,
-      grindType: 'HSS',
-      grindIndex: 1,
-      shim: 0,
-      accumWeight: 4026,
-      accumSlabs: 151,
-      accumLength: 25,
-      supplier: 'Supplier3',
-      rollChangeTime: '02/12 06:32'
+      headerName: 'INIT. CROWN [MM]',
+      marryChildren: true,
+      children: [
+        {
+          headerName: 'MAX',
+          field: 'initCrownMax',
+          width: 110,
+          cellStyle: {
+            display: 'flex', alignItems: 'center',
+            justifyContent: 'center',
+            color: '#E8F0FE', fontSize: '13px'
+          }
+        },
+        {
+          headerName: 'MIN',
+          field: 'initCrownMin',
+          width: 110,
+          cellStyle: {
+            display: 'flex', alignItems: 'center',
+            justifyContent: 'center',
+            color: '#E8F0FE', fontSize: '13px'
+          }
+        }
+      ]
+    } as ColGroupDef,
+    {
+      headerName: 'EQUI. CROWN [MM]',
+      marryChildren: true,
+      children: [
+        {
+          headerName: 'MAX',
+          field: 'equiCrownMax',
+          width: 110,
+          cellStyle: {
+            display: 'flex', alignItems: 'center',
+            justifyContent: 'center',
+            color: '#E8F0FE', fontSize: '13px'
+          }
+        },
+        {
+          headerName: 'MIN',
+          field: 'equiCrownMin',
+          width: 110,
+          cellStyle: {
+            display: 'flex', alignItems: 'center',
+            justifyContent: 'center',
+            color: '#E8F0FE', fontSize: '13px'
+          }
+        }
+      ]
+    } as ColGroupDef,
+    {
+      headerName: 'GRIND TYPE',
+      field: 'grindType',
+      width: 130,
+      cellRenderer: (params: any) => {
+        if (!params.value || params.value === '-') {
+          return `<span style="color:#3D5175;font-size:13px">-</span>`;
+        }
+        return `
+        <div style="display:flex;align-items:center;
+                    justify-content:center;height:100%">
+          <span style="
+            background: rgba(167,139,250,0.15);
+            color: #A78BFA;
+            border: 1px solid rgba(167,139,250,0.3);
+            border-radius: 8px;
+            padding: 3px 12px;
+            font-size: 11px;
+            font-weight: 700;
+          ">${params.value}</span>
+        </div>`;
+      }
     },
     {
-      stand: 'F1',
-      pos: 'B',
-      rollNo: 'F1HSDOA06',
-      diameter: 766.741,
-      matCode: 'HSS',
-      initCrownMax: 0.0,
-      initCrownMin: 0.8,
-      equiCrownMax: 0.8,
-      equiCrownMin: -1.0,
-      grindType: 'HSS',
-      grindIndex: 1,
-      shim: 0,
-      accumWeight: 4026,
-      accumSlabs: 151,
-      accumLength: 25,
-      supplier: 'Supplier3',
-      rollChangeTime: '02/12 06:32'
+      headerName: 'GRIND INDEX',
+      field: 'grindIndex',
+      width: 120,
+      cellStyle: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: '#E8F0FE',
+        fontSize: '13px'
+      }
     },
     {
-      stand: 'F5',
-      pos: 'T',
-      rollNo: 'FB5FCFA01',
-      diameter: 1530.034,
-      matCode: 'FS',
-      initCrownMax: 0.3,
-      initCrownMin: 0.0,
-      equiCrownMax: 0.0,
-      equiCrownMin: 0.0,
-      grindType: 'FS',
-      grindIndex: 0,
-      shim: 20,
-      accumWeight: 46_382,
-      accumSlabs: 2015,
-      accumLength: 404,
-      supplier: 'Supplier2',
-      rollChangeTime: '02/06 19:15'
+      headerName: 'SHIM [MM]',
+      field: 'shim',
+      width: 110,
+      cellStyle: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: '#E8F0FE',
+        fontSize: '13px'
+      }
     },
     {
-      stand: 'F1',
-      pos: 'T',
-      rollNo: 'F1CIYA05',
-      diameter: 750.064,
-      matCode: 'HICHR',
-      initCrownMax: 0.0,
-      initCrownMin: 0.8,
-      equiCrownMax: 0.8,
-      equiCrownMin: -1.0,
-      grindType: 'HICHR',
-      grindIndex: 1,
-      shim: 0,
-      accumWeight: 2414,
-      accumSlabs: 119,
-      accumLength: 28,
-      supplier: 'Supplier4',
-      rollChangeTime: '02/12 10:23'
+      headerName: 'TOTAL ACCUMULATION',
+      headerClass: 'group-header-white',
+      marryChildren: true,
+      children: [
+        {
+          headerName: 'WEIGHT [TON]',
+          field: 'totalWeight',
+          width: 130,
+          cellStyle: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#E8F0FE',
+            fontSize: '13px'
+          }
+        },
+        {
+          headerName: 'SLABS',
+          field: 'totalSlabs',
+          width: 100,
+          cellStyle: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#E8F0FE',
+            fontSize: '13px'
+          }
+        },
+        {
+          headerName: 'LENGTH [KM]',
+          field: 'totalLength',
+          width: 120,
+          cellStyle: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#E8F0FE',
+            fontSize: '13px'
+          }
+        }
+      ]
+    } as ColGroupDef,
+    {
+      headerName: 'SUPPLIER',
+      field: 'supplier',
+      width: 130,
+      cellStyle: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: '#E8F0FE',
+        fontSize: '13px'
+      }
     },
     {
-      stand: 'F5',
-      pos: 'T',
-      rollNo: 'FB5FNKA19',
-      diameter: 1531.136,
-      matCode: 'FS',
-      initCrownMax: 0.3,
-      initCrownMin: 0.0,
-      equiCrownMax: 0.0,
-      equiCrownMin: 0.0,
-      grindType: 'FS',
-      grindIndex: 0,
-      shim: 45,
-      accumWeight: 46_517,
-      accumSlabs: 1995,
-      accumLength: 635,
-      supplier: 'Supplier2',
-      rollChangeTime: '02/06 19:15'
-    },
-    {
-      stand: 'F5',
-      pos: 'B',
-      rollNo: 'FB5FNKA20',
-      diameter: 1526.077,
-      matCode: 'FS',
-      initCrownMax: 0.3,
-      initCrownMin: 0.0,
-      equiCrownMax: 0.0,
-      equiCrownMin: 0.0,
-      grindType: 'FS',
-      grindIndex: 0,
-      shim: 50,
-      accumWeight: 46_517,
-      accumSlabs: 1995,
-      accumLength: 635,
-      supplier: 'Supplier2',
-      rollChangeTime: '02/06 19:15'
+      headerName: 'ROLL GRIND TIME',
+      field: 'rollGrindTime',
+      width: 190,
+      cellStyle: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: '#E8F0FE',
+        fontSize: '13px'
+      }
     }
   ];
 
-  readonly chokeData: ChokeRow[] = [
-    { chokeId: 'CHK-E1-OS', weight: 12_500, slabs: 820, length: 58.2, supplier: 'Supplier3' },
-    { chokeId: 'CHK-E1-DS', weight: 12_300, slabs: 810, length: 57.1, supplier: 'Supplier3' },
-    { chokeId: 'CHK-E2-OS', weight: 11_800, slabs: 780, length: 54.3, supplier: 'Supplier4' },
-    { chokeId: 'CHK-E2-DS', weight: 11_600, slabs: 765, length: 53.1, supplier: 'Supplier4' },
-    { chokeId: 'CHK-F1-OS', weight: 8900, slabs: 580, length: 42.5, supplier: 'Supplier5' },
-    { chokeId: 'CHK-F1-DS', weight: 8750, slabs: 570, length: 41.8, supplier: 'Supplier5' }
+  readonly rollInventoryDefaultColDef: ColDef = {
+    resizable: true,
+    sortable: false,
+    suppressMovable: false,
+    suppressMenu: true
+  };
+
+  readonly rollInventoryRowData: RollInventoryRow[] = [
+    {
+      rollNo: 'FB3FDOA01',
+      standCategory: 'F1-F4',
+      diameter: 1539.402,
+      materialCode: 'FS',
+      initCrownMax: 0.3,
+      initCrownMin: 0,
+      equiCrownMax: 0,
+      equiCrownMin: 0,
+      grindType: 'FS',
+      grindIndex: 0,
+      shim: 0,
+      totalWeight: 154763,
+      totalSlabs: 6967,
+      totalLength: 415,
+      supplier: 'Supplier1',
+      rollGrindTime: '2025-01-15T15:01:00'
+    },
+    {
+      rollNo: 'FB3FDOA02',
+      standCategory: 'F1-F4',
+      diameter: 1540.358,
+      materialCode: 'FS',
+      initCrownMax: 0.3,
+      initCrownMin: 0,
+      equiCrownMax: 0,
+      equiCrownMin: 0,
+      grindType: 'FS',
+      grindIndex: 0,
+      shim: 5,
+      totalWeight: 151220,
+      totalSlabs: 6820,
+      totalLength: 413,
+      supplier: 'Supplier1',
+      rollGrindTime: '2025-01-15T15:01:00'
+    },
+    {
+      rollNo: 'F1HSCMA03',
+      standCategory: 'F1-F4',
+      diameter: 766.731,
+      materialCode: 'HSS',
+      initCrownMax: 0,
+      initCrownMin: 0.8,
+      equiCrownMax: 0.8,
+      equiCrownMin: -1,
+      grindType: 'HSS',
+      grindIndex: 1,
+      shim: 0,
+      totalWeight: 12450,
+      totalSlabs: 151,
+      totalLength: 25,
+      supplier: 'Supplier3',
+      rollGrindTime: '2025-02-06T19:15:00'
+    },
+    {
+      rollNo: 'F1HSDOA06',
+      standCategory: 'F1-F4',
+      diameter: 766.741,
+      materialCode: 'HSS',
+      initCrownMax: 0,
+      initCrownMin: 0.8,
+      equiCrownMax: 0.8,
+      equiCrownMin: -1,
+      grindType: 'HSS',
+      grindIndex: 1,
+      shim: 0,
+      totalWeight: 12110,
+      totalSlabs: 148,
+      totalLength: 24,
+      supplier: 'Supplier3',
+      rollGrindTime: '2025-02-06T19:15:00'
+    },
+    {
+      rollNo: 'F1CIYA05',
+      standCategory: 'F1-F4',
+      diameter: 750.064,
+      materialCode: 'HICHR',
+      initCrownMax: 0,
+      initCrownMin: 0.8,
+      equiCrownMax: 0.8,
+      equiCrownMin: -1,
+      grindType: 'HICHR',
+      grindIndex: 1,
+      shim: 0,
+      totalWeight: 13850,
+      totalSlabs: 119,
+      totalLength: 28,
+      supplier: 'Supplier4',
+      rollGrindTime: '2025-02-06T19:15:00'
+    },
+    {
+      rollNo: 'FB5FCFA01',
+      standCategory: 'F5-F7',
+      diameter: 1530.034,
+      materialCode: 'FS',
+      initCrownMax: 0.3,
+      initCrownMin: 0,
+      equiCrownMax: 0,
+      equiCrownMin: 0,
+      grindType: 'FS',
+      grindIndex: 0,
+      shim: 20,
+      totalWeight: 32640,
+      totalSlabs: 2015,
+      totalLength: 404,
+      supplier: 'Supplier2',
+      rollGrindTime: '2025-02-12T06:32:00'
+    },
+    {
+      rollNo: 'FB5FNKA19',
+      standCategory: 'F5-F7',
+      diameter: 1531.136,
+      materialCode: 'FS',
+      initCrownMax: 0.3,
+      initCrownMin: 0,
+      equiCrownMax: 0,
+      equiCrownMin: 0,
+      grindType: 'FS',
+      grindIndex: 0,
+      shim: 45,
+      totalWeight: 41230,
+      totalSlabs: 1995,
+      totalLength: 635,
+      supplier: 'Supplier2',
+      rollGrindTime: '2025-02-12T10:23:00'
+    },
+    {
+      rollNo: 'FB5FNKA20',
+      standCategory: 'F5-F7',
+      diameter: 1526.077,
+      materialCode: 'FS',
+      initCrownMax: 0.3,
+      initCrownMin: 0,
+      equiCrownMax: 0,
+      equiCrownMin: 0,
+      grindType: 'FS',
+      grindIndex: 0,
+      shim: 50,
+      totalWeight: 40190,
+      totalSlabs: 1980,
+      totalLength: 622,
+      supplier: 'Supplier2',
+      rollGrindTime: '2025-02-06T19:15:00'
+    },
+    {
+      rollNo: 'F1EOS06',
+      standCategory: 'Edger',
+      diameter: 600.0,
+      materialCode: 'SS',
+      initCrownMax: 0,
+      initCrownMin: 0,
+      equiCrownMax: 0,
+      equiCrownMin: 0,
+      grindType: '-',
+      grindIndex: 0,
+      shim: 0,
+      totalWeight: 9875,
+      totalSlabs: 820,
+      totalLength: 58,
+      supplier: 'Supplier5',
+      rollGrindTime: '2025-01-15T15:01:00'
+    },
+    {
+      rollNo: 'F1EDS06',
+      standCategory: 'Edger',
+      diameter: 600.0,
+      materialCode: 'SS',
+      initCrownMax: 0,
+      initCrownMin: 0,
+      equiCrownMax: 0,
+      equiCrownMin: 0,
+      grindType: '-',
+      grindIndex: 0,
+      shim: 0,
+      totalWeight: 9750,
+      totalSlabs: 810,
+      totalLength: 57,
+      supplier: 'Supplier5',
+      rollGrindTime: '2025-01-15T15:01:00'
+    },
+    {
+      rollNo: 'R1WR0123',
+      standCategory: 'R1',
+      diameter: 845.125,
+      materialCode: 'HSS',
+      initCrownMax: 0.2,
+      initCrownMin: 0.0,
+      equiCrownMax: 0.1,
+      equiCrownMin: 0.0,
+      grindType: 'CVC',
+      grindIndex: 2,
+      shim: 10,
+      totalWeight: 25680,
+      totalSlabs: 1420,
+      totalLength: 96,
+      supplier: 'Supplier6',
+      rollGrindTime: '2025-02-18T09:40:00'
+    },
+    {
+      rollNo: 'R2BUR0456',
+      standCategory: 'R2',
+      diameter: 980.600,
+      materialCode: 'FS',
+      initCrownMax: 0.4,
+      initCrownMin: 0.1,
+      equiCrownMax: 0.2,
+      equiCrownMin: 0.1,
+      grindType: 'Flat',
+      grindIndex: 3,
+      shim: 15,
+      totalWeight: 31240,
+      totalSlabs: 1680,
+      totalLength: 112,
+      supplier: 'Supplier7',
+      rollGrindTime: '2025-02-20T14:05:00'
+    }
   ];
+
+  onExportRollInventory() {
+    const headers = [
+      'Roll No.',
+      'Stand Category',
+      'Diameter [MM]',
+      'Material Code',
+      'Init Crown Max',
+      'Init Crown Min',
+      'Equi Crown Max',
+      'Equi Crown Min',
+      'Grind Type',
+      'Grind Index',
+      'Shim [MM]',
+      'Total Weight [TON]',
+      'Total Slabs',
+      'Total Length [KM]',
+      'Supplier',
+      'Roll Grind Time'
+    ];
+
+    const rows = this.rollInventoryRowData.map((r: any) => {
+      const grindTime = (() => {
+        if (!r.rollGrindTime) return '';
+        if (typeof r.rollGrindTime === 'string') {
+          return r.rollGrindTime.replace('T', ' ');
+        }
+        return `${r.rollGrindTime?.date ?? ''} ${r.rollGrindTime?.time ?? ''}`.trim();
+      })();
+
+      return [
+        r.rollNo,
+        r.standCategory,
+        r.diameter,
+        r.materialCode,
+        r.initCrownMax,
+        r.initCrownMin,
+        r.equiCrownMax,
+        r.equiCrownMin,
+        r.grindType,
+        r.grindIndex,
+        r.shim,
+        r.totalWeight,
+        r.totalSlabs,
+        r.totalLength,
+        r.supplier,
+        grindTime
+      ];
+    });
+
+    const csv = [headers, ...rows].map((r: any[]) => r.join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `roll-inventory-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  }
+
+  readonly chokeRowData: ChokeRow[] = [
+    { chokeId: 'CHK-E1-OS', weight: 12500, slabs: 820, length: 58.2, supplier: 'Supplier3' },
+    { chokeId: 'CHK-E1-DS', weight: 12300, slabs: 810, length: 57.1, supplier: 'Supplier3' },
+    { chokeId: 'CHK-E2-OS', weight: 11800, slabs: 780, length: 54.3, supplier: 'Supplier4' },
+    { chokeId: 'CHK-E2-DS', weight: 11600, slabs: 765, length: 53.1, supplier: 'Supplier4' },
+    { chokeId: 'CHK-F1-OS', weight: 8900, slabs: 580, length: 42.5, supplier: 'Supplier5' },
+    { chokeId: 'CHK-F1-DS', weight: 8750, slabs: 570, length: 41.8, supplier: 'Supplier5' },
+    { chokeId: 'CHK-F2-OS', weight: 8600, slabs: 560, length: 41.2, supplier: 'Supplier3' },
+    { chokeId: 'CHK-F2-DS', weight: 8450, slabs: 550, length: 40.5, supplier: 'Supplier3' },
+    { chokeId: 'CHK-F3-OS', weight: 7900, slabs: 510, length: 38.4, supplier: 'Supplier6' },
+    { chokeId: 'CHK-F3-DS', weight: 7750, slabs: 500, length: 37.8, supplier: 'Supplier6' }
+  ];
+
+  readonly chokeColDefs: ColDef[] = [
+    {
+      headerName: 'CHOKE ID',
+      field: 'chokeId',
+      width: 180,
+      pinned: 'left',
+      cellStyle: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: '#00D4FF',
+        fontWeight: '700',
+        fontSize: '13px'
+      }
+    },
+    {
+      headerName: 'WEIGHT (TON)',
+      field: 'weight',
+      flex: 1,
+      minWidth: 130,
+      cellStyle: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: '#E8F0FE',
+        fontWeight: '500',
+        fontSize: '13px'
+      }
+    },
+    {
+      headerName: 'SLABS',
+      field: 'slabs',
+      flex: 1,
+      minWidth: 100,
+      cellStyle: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: '#E8F0FE',
+        fontWeight: '500',
+        fontSize: '13px'
+      }
+    },
+    {
+      headerName: 'LENGTH (KM)',
+      field: 'length',
+      flex: 1,
+      minWidth: 120,
+      cellStyle: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: '#E8F0FE',
+        fontWeight: '500',
+        fontSize: '13px'
+      }
+    },
+    {
+      headerName: 'SUPPLIER',
+      field: 'supplier',
+      flex: 1,
+      minWidth: 130,
+      cellStyle: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: '#E8F0FE',
+        fontWeight: '500',
+        fontSize: '13px'
+      }
+    }
+  ];
+
+  readonly chokeDefaultColDef: ColDef = {
+    resizable: false,
+    sortable: false,
+    suppressMovable: true,
+    cellStyle: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontSize: '13px',
+      color: '#E8F0FE'
+    }
+  };
+
+  onExportChokeInventory() {
+    const headers = ['Choke ID', 'Weight (TON)', 'Slabs', 'Length (KM)', 'Supplier'];
+    const rows = this.chokeRowData.map((r: any) => [
+      r.chokeId,
+      r.weight,
+      r.slabs,
+      r.length,
+      r.supplier
+    ]);
+    const csv = [headers, ...rows].map((r: any[]) => r.join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `choke-inventory-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  }
+
+  ngOnInit(): void {
+    this.rollTotalRows = this.rollInventoryRowData.length;
+    this.chokeTotalRows = this.chokeRowData.length;
+  }
 
   entryForm: EntryForm = this.createEmptyForm();
   readonly rollTypeOptions: Array<'Edger Roll' | 'Pinch Roll'> = ['Edger Roll', 'Pinch Roll'];
@@ -376,18 +911,12 @@ export class InventoryComponent {
     'SS'
   ];
 
-  get groupedRolls(): Array<{ stand: string; rows: RollRow[] }> {
-    const groups = new Map<string, RollRow[]>();
-    for (const row of this.rollData) {
-      const list = groups.get(row.stand) ?? [];
-      list.push(row);
-      groups.set(row.stand, list);
-    }
-    return Array.from(groups.entries()).map(([stand, rows]) => ({ stand, rows }));
-  }
-
-  isGroupA(card: KpiCard): boolean {
-    return card.id === 'rm' || card.id === 'f1f4' || card.id === 'f5f7';
+  getStandCategoryPillStyle(standCategory: RollRow['standCategory']): { [key: string]: string } {
+    return {
+      background: 'rgba(167,139,250,0.15)',
+      color: '#A78BFA',
+      border: '1px solid rgba(167,139,250,0.35)'
+    };
   }
 
   setType(type: ActiveType): void {
@@ -491,7 +1020,7 @@ export class InventoryComponent {
     return base;
   }
 
-  getPOSBadge(pos: RollRow['pos']): { [key: string]: string } {
+  getPOSBadge(pos: RollPos): { [key: string]: string } {
     if (pos === 'T') {
       return {
         background: 'rgba(0,212,255,0.1)',

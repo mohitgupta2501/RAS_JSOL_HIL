@@ -284,9 +284,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: nowrap;
   padding: 12px 20px;
   margin-top: 8px;
-  background: linear-gradient(145deg, #0f1a2e, #0a1020);
+  background: rgba(10,20,40,0.4);
   border: 1px solid rgba(0, 212, 255, 0.08);
   border-radius: 0 0 12px 12px;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
@@ -294,7 +295,7 @@
 }
 
 .page-info {
-  font-size: 12px;
+  font-size: 13px;
   color: #7b90b8;
 
   .page-highlight {
@@ -370,7 +371,7 @@
 .page-size-control {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
 }
 
 .page-size-label {
@@ -629,5 +630,111 @@
 
   ag-grid-angular {
     height: 400px !important;
+  }
+}
+
+::ng-deep .home-table-grid.ag-theme-custom-dark {
+
+  /* All header text → white */
+  .ag-header-cell-text {
+    color: #E8F0FE !important;
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.8px !important;
+    white-space: normal !important;
+    text-align: center !important;
+    line-height: 1.4 !important;
+  }
+
+  .ag-header-cell-label {
+    justify-content: center !important;
+    align-items: center !important;
+    padding: 4px 6px !important;
+  }
+
+  /* Group headers (CYCLE, CUMULATIVE) */
+  .ag-header-group-cell-label {
+    justify-content: center !important;
+  }
+
+  .ag-header-group-cell-label span,
+  .ag-header-group-text {
+    color: #E8F0FE !important;
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.8px !important;
+  }
+
+  .ag-header {
+    background: #0A1428 !important;
+    border-bottom: 2px solid rgba(0,212,255,0.2) !important;
+  }
+
+  .ag-header-row {
+    background: #0A1428 !important;
+  }
+
+  .ag-header-cell {
+    border-right: 1px solid rgba(255,255,255,0.07) !important;
+    padding: 0 4px !important;
+  }
+
+  .ag-header-group-cell {
+    border-right: 1px solid rgba(255,255,255,0.07) !important;
+  }
+
+  /* Visible cell borders */
+  .ag-cell {
+    border-right: 1px solid rgba(255,255,255,0.06) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 13px !important;
+  }
+
+  /* Visible row borders */
+  .ag-row {
+    border-bottom: 1px solid rgba(255,255,255,0.07) !important;
+  }
+
+  .ag-row:last-child {
+    border-bottom: 1px solid rgba(255,255,255,0.07) !important;
+  }
+
+  /* Alternating row background for readability */
+  .ag-row-even {
+    background: rgba(255,255,255,0.01) !important;
+  }
+
+  .ag-row-odd {
+    background: rgba(0,0,0,0.12) !important;
+  }
+
+  .ag-row-hover {
+    background: rgba(37,99,235,0.08) !important;
+  }
+
+  /* Pinned left column border */
+  .ag-pinned-left-cols-container .ag-cell {
+    border-right: 2px solid rgba(0,212,255,0.15) !important;
+  }
+
+  .ag-pinned-left-header {
+    border-right: 2px solid rgba(0,212,255,0.15) !important;
+    background: #0A1428 !important;
+  }
+
+  /* Remove sort icons */
+  .ag-sort-indicator-icon,
+  .ag-header-icon {
+    display: none !important;
+  }
+
+  /* Outer grid border */
+  .ag-root-wrapper {
+    border: 1px solid rgba(0,212,255,0.1) !important;
+    border-radius: 0 0 12px 12px !important;
   }
 }

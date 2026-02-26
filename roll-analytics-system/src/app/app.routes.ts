@@ -61,24 +61,24 @@ export const routes: Routes = [
             (m) => m.InventoryComponent
           )
       },
-      {
-        path: 'dashboard',
-        title: 'Dashboard',
-        data: { icon: 'dashboard' },
-        loadComponent: () =>
-          import('./features/dashboard/dashboard.component').then(
-            (m) => m.DashboardComponent
-          )
-      },
-      {
-        path: 'roll-details',
-        title: 'Roll Details',
-        data: { icon: 'settings' },
-        loadComponent: () =>
-          import('./features/roll-details/roll-details.component').then(
-            (m) => m.RollDetailsComponent
-          )
-      },
+      // {
+      //   path: 'dashboard',
+      //   title: 'Dashboard',
+      //   data: { icon: 'dashboard' },
+      //   loadComponent: () =>
+      //     import('./features/dashboard/dashboard.component').then(
+      //       (m) => m.DashboardComponent
+      //     )
+      // },
+      // {
+      //   path: 'roll-details',
+      //   title: 'Roll Details',
+      //   data: { icon: 'settings' },
+      //   loadComponent: () =>
+      //     import('./features/roll-details/roll-details.component').then(
+      //       (m) => m.RollDetailsComponent
+      //     )
+      // },
       {
         path: 'roll-analysis',
         title: 'Roll Analysis',
@@ -88,15 +88,15 @@ export const routes: Routes = [
             (m) => m.RollAnalysisComponent
           )
       },
-      {
-        path: 'mill-information',
-        title: 'Mill Information',
-        data: { icon: 'precision_manufacturing' },
-        loadComponent: () =>
-          import('./features/mill-information/mill-information.component').then(
-            (m) => m.MillInformationComponent
-          )
-      },
+      // {
+      //   path: 'mill-information',
+      //   title: 'Mill Information',
+      //   data: { icon: 'precision_manufacturing' },
+      //   loadComponent: () =>
+      //     import('./features/mill-information/mill-information.component').then(
+      //       (m) => m.MillInformationComponent
+      //     )
+      // },
       {
         path: 'telegram-logs',
         title: 'Telegram Logs',
@@ -115,18 +115,18 @@ export const routes: Routes = [
             (m) => m.AlarmsComponent
           )
       },
+      // {
+      //   path: 'performance',
+      //   title: 'Performance',
+      //   data: { icon: 'analytics' },
+      //   loadComponent: () =>
+      //     import('./features/performance/performance.component').then(
+      //       (m) => m.PerformanceComponent
+      //     )
+      // },
       {
-        path: 'performance',
-        title: 'Performance',
-        data: { icon: 'analytics' },
-        loadComponent: () =>
-          import('./features/performance/performance.component').then(
-            (m) => m.PerformanceComponent
-          )
-      },
-      {
-        path: 'performance-analysis',
-        title: 'Performance Analysis',
+        path: 'supplier-analysis',
+        title: 'Supplier Analysis',
         data: { icon: 'leaderboard' },
         loadComponent: () =>
           import('./features/performance-analysis/performance-analysis.component').then(
@@ -134,23 +134,32 @@ export const routes: Routes = [
           )
       },
       {
-        path: 'cost-analysis',
-        title: 'Cost Analysis',
-        data: { icon: 'paid' },
+        path: 'advance-analysis',
+        title: 'Advance Analysis',
+        data: { icon: 'biotech' },
         loadComponent: () =>
-          import('./features/cost-analysis/cost-analysis.component').then(
-            (m) => m.CostAnalysisComponent
+          import('./features/advance-analysis/advance-analysis.component').then(
+            (m) => m.AdvanceAnalysisComponent
           )
       },
-      {
-        path: 'reports',
-        title: 'Reports',
-        data: { icon: 'summarize' },
-        loadComponent: () =>
-          import('./features/reports/reports.component').then(
-            (m) => m.ReportsComponent
-          )
-      },
+      // {
+      //   path: 'cost-analysis',
+      //   title: 'Cost Analysis',
+      //   data: { icon: 'paid' },
+      //   loadComponent: () =>
+      //     import('./features/cost-analysis/cost-analysis.component').then(
+      //       (m) => m.CostAnalysisComponent
+      //     )
+      // },
+      // {
+      //   path: 'reports',
+      //   title: 'Reports',
+      //   data: { icon: 'summarize' },
+      //   loadComponent: () =>
+      //     import('./features/reports/reports.component').then(
+      //       (m) => m.ReportsComponent
+      //     )
+      // },
       {
         path: 'notifications',
         title: 'Notifications',

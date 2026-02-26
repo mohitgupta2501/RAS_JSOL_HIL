@@ -21,11 +21,12 @@ interface RollRow {
   cycleLength: number;
   cumulWeight: number;
   cumulLength: number;
+  noOfCycle: number;
   supplier: string;
   progress: number; // 0-100
 }
 
-type TabKey = 'all' | 'roughing' | 'finishing';
+type TabKey = 'all' | 'roughing' | 'finishing' | 'pinch' | 'edger';
 
 @Component({
   selector: 'app-home',
@@ -41,10 +42,37 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   activeTab: TabKey = 'all';
 
-  tabs: Array<{ key: TabKey; label: string; icon: string; count: number }> = [
-    { key: 'all', label: 'All', icon: 'grid_view', count: 0 },
-    { key: 'roughing', label: 'Roughing', icon: 'construction', count: 0 },
-    { key: 'finishing', label: 'Finishing', icon: 'precision_manufacturing', count: 0 }
+  tabs = [
+    {
+      id: 'all',
+      label: 'All',
+      count: 43,
+      icon: 'grid_view'
+    },
+    {
+      id: 'roughing',
+      label: 'Roughing',
+      count: 6,
+      icon: 'construction'
+    },
+    {
+      id: 'finishing',
+      label: 'Finishing',
+      count: 28,
+      icon: 'settings'
+    },
+    {
+      id: 'pinch',
+      label: 'Pinch',
+      count: 3,
+      icon: 'compress'
+    },
+    {
+      id: 'edger',
+      label: 'Edger',
+      count: 6,
+      icon: 'straighten'
+    }
   ];
 
   allStands: string[] = [
@@ -118,6 +146,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       cycleLength: 8.5,
       cumulWeight: 12500,
       cumulLength: 85.2,
+      noOfCycle: 5,
       supplier: 'Supplier2',
       progress: 72
     },
@@ -130,6 +159,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       cycleLength: 7.9,
       cumulWeight: 11800,
       cumulLength: 79.1,
+      noOfCycle: 6,
       supplier: 'Supplier2',
       progress: 68
     },
@@ -142,6 +172,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       cycleLength: 6.5,
       cumulWeight: 9800,
       cumulLength: 65.3,
+      noOfCycle: 4,
       supplier: 'Supplier9',
       progress: 45
     },
@@ -154,6 +185,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       cycleLength: 6.3,
       cumulWeight: 9600,
       cumulLength: 63.1,
+      noOfCycle: 3,
       supplier: 'Supplier9',
       progress: 42
     },
@@ -168,6 +200,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       cycleLength: 9.2,
       cumulWeight: 13500,
       cumulLength: 92.1,
+      noOfCycle: 7,
       supplier: 'Supplier1',
       progress: 85
     },
@@ -180,6 +213,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       cycleLength: 8.9,
       cumulWeight: 13200,
       cumulLength: 89.4,
+      noOfCycle: 6,
       supplier: 'Supplier1',
       progress: 82
     },
@@ -194,6 +228,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       cycleLength: 5.8,
       cumulWeight: 8900,
       cumulLength: 58.2,
+      noOfCycle: 4,
       supplier: 'Supplier3',
       progress: 55
     },
@@ -206,6 +241,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       cycleLength: 5.6,
       cumulWeight: 8700,
       cumulLength: 56.1,
+      noOfCycle: 4,
       supplier: 'Supplier4',
       progress: 52
     },
@@ -220,6 +256,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       cycleLength: 9.8,
       cumulWeight: 14500,
       cumulLength: 98.3,
+      noOfCycle: 8,
       supplier: 'Supplier1',
       progress: 91
     },
@@ -232,6 +269,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       cycleLength: 9.5,
       cumulWeight: 14200,
       cumulLength: 95.1,
+      noOfCycle: 7,
       supplier: 'Supplier1',
       progress: 88
     },
@@ -244,6 +282,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       cycleLength: 9.1,
       cumulWeight: 13800,
       cumulLength: 91.2,
+      noOfCycle: 6,
       supplier: 'Supplier2',
       progress: 78
     },
@@ -256,6 +295,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       cycleLength: 8.9,
       cumulWeight: 13600,
       cumulLength: 89.1,
+      noOfCycle: 5,
       supplier: 'Supplier2',
       progress: 75
     },
@@ -268,6 +308,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       cycleLength: 8.5,
       cumulWeight: 12900,
       cumulLength: 85.4,
+      noOfCycle: 5,
       supplier: 'Supplier6',
       progress: 62
     },
@@ -280,6 +321,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       cycleLength: 8.3,
       cumulWeight: 12700,
       cumulLength: 83.2,
+      noOfCycle: 4,
       supplier: 'Supplier6',
       progress: 59
     },
@@ -292,6 +334,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       cycleLength: 21.5,
       cumulWeight: 32000,
       cumulLength: 215.3,
+      noOfCycle: 9,
       supplier: 'Supplier1',
       progress: 35
     },
@@ -304,6 +347,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       cycleLength: 21.1,
       cumulWeight: 31500,
       cumulLength: 211.2,
+      noOfCycle: 8,
       supplier: 'Supplier1',
       progress: 32
     },
@@ -316,6 +360,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       cycleLength: 7.6,
       cumulWeight: 11500,
       cumulLength: 76.3,
+      noOfCycle: 4,
       supplier: 'Supplier3',
       progress: 48
     },
@@ -328,6 +373,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       cycleLength: 7.4,
       cumulWeight: 11300,
       cumulLength: 74.1,
+      noOfCycle: 3,
       supplier: 'Supplier3',
       progress: 45
     },
@@ -340,6 +386,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       cycleLength: 7.1,
       cumulWeight: 10800,
       cumulLength: 71.2,
+      noOfCycle: 4,
       supplier: 'Supplier5',
       progress: 38
     },
@@ -352,6 +399,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       cycleLength: 6.9,
       cumulWeight: 10600,
       cumulLength: 69.3,
+      noOfCycle: 4,
       supplier: 'Supplier5',
       progress: 35
     },
@@ -364,6 +412,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       cycleLength: 6.4,
       cumulWeight: 9800,
       cumulLength: 64.2,
+      noOfCycle: 3,
       supplier: 'Supplier6',
       progress: 28
     },
@@ -376,6 +425,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       cycleLength: 6.2,
       cumulWeight: 9600,
       cumulLength: 62.1,
+      noOfCycle: 3,
       supplier: 'Supplier6',
       progress: 25
     },
@@ -390,6 +440,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       cycleLength: 5.1,
       cumulWeight: 7800,
       cumulLength: 51.3,
+      noOfCycle: 6,
       supplier: 'Supplier7',
       progress: 60
     },
@@ -402,6 +453,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       cycleLength: 4.9,
       cumulWeight: 7600,
       cumulLength: 49.2,
+      noOfCycle: 5,
       supplier: 'Supplier7',
       progress: 57
     }
@@ -770,6 +822,33 @@ export class HomeComponent implements OnInit, OnDestroy {
       ]
     },
     {
+      headerName: 'NO. OF CYCLE',
+      field: 'noOfCycle',
+      width: 120,
+      cellRenderer: (params: any) => {
+        const val = params.value;
+        if (!val && val !== 0) {
+          return `<span style="color:#3D5175;font-size:13px">-</span>`;
+        }
+        return `
+          <div style="
+            display:flex;align-items:center;
+            justify-content:center;height:100%;
+          ">
+            <span style="
+              color:#00D4FF;
+              font-weight:700;
+              font-size:14px;
+            ">${val}</span>
+          </div>`;
+      },
+      cellStyle: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }
+    },
+    {
       field: 'supplier',
       headerName: 'SUPPLIER',
       width: 120,
@@ -822,7 +901,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.updateTabCounts();
     this.startAutoRefresh();
   }
 
@@ -844,6 +922,11 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.gridApi?.paginationGoToFirstPage();
   }
 
+  setActiveTab(id: string) {
+    this.activeTab = id as TabKey;
+    this.switchTab(this.activeTab);
+  }
+
   toggleAutoRefresh(): void {
     this.autoRefresh = !this.autoRefresh;
     if (this.autoRefresh) this.startAutoRefresh();
@@ -862,17 +945,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   private updateTabCounts(): void {
-    const all = this.rowData.length;
-    const roughing = this.rowData.filter((r) => ['R1', 'R2'].includes(r.stand)).length;
-    const finishing = this.rowData.filter((r) =>
-      ['F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7'].includes(r.stand)
-    ).length;
-
-    for (const t of this.tabs) {
-      if (t.key === 'all') t.count = all;
-      else if (t.key === 'roughing') t.count = roughing;
-      else t.count = finishing;
-    }
   }
 
   updateLiveData(): void {
@@ -884,7 +956,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     }));
 
     this.lastUpdated = new Date();
-    this.updateTabCounts();
     this.gridApi?.setRowData(this.filteredData);
   }
 
@@ -920,6 +991,48 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.gridApi?.paginationSetPageSize(Number(this.pageSize));
     this.currentPage = 1;
     this.gridApi?.paginationGoToFirstPage();
+  }
+
+  onExport() {
+    const headers = [
+      'Roll ID',
+      'Stand',
+      'Type',
+      'Position',
+      'Cycle Weight (TON)',
+      'Cycle Length (KM)',
+      'Cumulative Weight (TON)',
+      'Cumulative Length (KM)',
+      'No. of Cycle',
+      'Supplier',
+      'Campaign Util.'
+    ];
+
+    const rows = this.rowData.map((row: RollRow) => [
+      row.rollId,
+      row.stand,
+      row.type,
+      row.position,
+      row.cycleWeight,
+      row.cycleLength,
+      row.cumulWeight,
+      row.cumulLength,
+      row.noOfCycle,
+      row.supplier,
+      row.progress
+    ]);
+
+    const csvContent = [headers, ...rows]
+      .map((r) => r.join(','))
+      .join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `roll-inventory-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
   }
 }
 

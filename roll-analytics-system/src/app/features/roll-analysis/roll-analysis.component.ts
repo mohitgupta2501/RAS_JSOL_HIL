@@ -10,9 +10,10 @@ import type { ColDef, GridOptions } from 'ag-grid-community';
 
 interface RollUsageData {
   cycleNo: number;
-  plant: string;
+  stand: string;
   position: string;
   rolledLength: number;
+  rolledWeight: number;
   cycleStartDate: string;
   cycleEndDate: string;
   diameterStart: number;
@@ -38,13 +39,17 @@ export class RollAnalysisComponent implements OnInit {
   // Filter bar dropdown state
   openDropdown: string | null = null;
 
-  readonly rollIdOptions = ['WR123', 'WR456', 'VR789'];
-  readonly millOptions = ['R1', 'R2', 'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7'];
-  readonly positionOptions = ['Top', 'Bottom'];
+  readonly standOptions = ['R1', 'R2', 'F1-F4', 'F5-F7', 'Edger', 'Pinch'];
+  readonly rollTypeOptions = ['WR', 'BUR'];
+  rollIdOptions: string[] = ['WR123', 'WR456', 'VR789', 'BR001', 'BR002'];
+  filteredRollIds: string[] = ['WR123', 'WR456', 'VR789', 'BR001', 'BR002'];
+  rollIdSearchQuery: string = '';
 
-  selectedRollId = this.rollIdOptions[0];
-  selectedMill = this.millOptions[0];
-  selectedPosition = this.positionOptions[0];
+  selectedStand = 'R1';
+  selectedRollType = 'WR';
+  selectedRollId = 'WR123';
+
+  filters: { rollId: string } = { rollId: this.selectedRollId };
 
   // KPI mock data is rendered directly in template from hardcoded values
 
@@ -63,322 +68,435 @@ export class RollAnalysisComponent implements OnInit {
   readonly itemsPerPage = 5;
   readonly totalPages = 1;
 
+  rollUsageCurrentPage = 1;
+  rollUsagePageSize = 10;
+  rollUsageTotalRows = 0;
+
   readonly spallOptions = ['Yes', 'No'];
   readonly crackOptions = ['Yes', 'No'];
   readonly uniformCircOptions = ['Good', 'Average', 'Poor'];
   readonly fitForUseOptions = ['Yes', 'No'];
 
   rollUsageData: RollUsageData[] = [
-    {
-      cycleNo: 1,
-      plant: 'Mill 1',
-      position: 'Top',
-      rolledLength: 600,
-      cycleStartDate: '2025-03-11',
-      cycleEndDate: '2025-01-15',
-      diameterStart: 483,
-      diameterEnd: 441,
-      maintCost: 0.1,
-      remarks: 'Normal wear',
-      spall: 'No',
-      crack: 'No',
-      uniformCirculation: 'Good',
-      fitForUse: 'Yes'
-    },
-    {
-      cycleNo: 2,
-      plant: 'Mill 1',
-      position: 'Top',
-      rolledLength: 600,
-      cycleStartDate: '2025-03-15',
-      cycleEndDate: '2025-01-20',
-      diameterStart: 441,
-      diameterEnd: 403,
-      maintCost: 0.2,
-      remarks: 'High usage',
-      spall: 'Yes',
-      crack: 'No',
-      uniformCirculation: 'Average',
-      fitForUse: 'Yes'
-    },
-    {
-      cycleNo: 3,
-      plant: 'Mill 1',
-      position: 'Bottom',
-      rolledLength: 600,
-      cycleStartDate: '2025-02-18',
-      cycleEndDate: '2025-01-20',
-      diameterStart: 403,
-      diameterEnd: 389,
-      maintCost: 0.2,
-      remarks: 'High usage',
-      spall: 'Yes',
-      crack: 'Yes',
-      uniformCirculation: 'Poor',
-      fitForUse: 'Yes'
-    },
-    {
-      cycleNo: 4,
-      plant: 'Mill 1',
-      position: 'Bottom',
-      rolledLength: 600,
-      cycleStartDate: '2025-02-15',
-      cycleEndDate: '2025-01-20',
-      diameterStart: 389,
-      diameterEnd: 361,
-      maintCost: 0.3,
-      remarks: 'High usage',
-      spall: 'No',
-      crack: 'Yes',
-      uniformCirculation: 'Average',
-      fitForUse: 'Yes'
-    },
-    {
-      cycleNo: 5,
-      plant: 'Mill 1',
-      position: 'Top',
-      rolledLength: 500,
-      cycleStartDate: '2025-03-15',
-      cycleEndDate: '2025-01-20',
-      diameterStart: 361,
-      diameterEnd: 360,
-      maintCost: 0.2,
-      remarks: 'High usage',
-      spall: 'No',
-      crack: 'No',
-      uniformCirculation: 'Good',
-      fitForUse: 'No'
+		{
+			cycleNo: 1,
+			stand: 'F1',
+			position: 'Top',
+			rolledLength: 600,
+			rolledWeight: 1251,
+			cycleStartDate: '2025-03-11 08:00',
+			cycleEndDate: '2025-01-15 16:30',
+			diameterStart: 483,
+			diameterEnd: 441,
+			maintCost: 0.1,
+			remarks: 'Normal wear',
+			spall: 'No',
+			crack: 'No',
+			uniformCirculation: 'Good',
+			fitForUse: 'Yes'
+		},
+		{
+			cycleNo: 2,
+			stand: 'F1',
+			position: 'Top',
+			rolledLength: 600,
+			rolledWeight: 1180,
+			cycleStartDate: '2025-03-15 06:00',
+			cycleEndDate: '2025-01-20 18:30',
+			diameterStart: 441,
+			diameterEnd: 403,
+			maintCost: 0.2,
+			remarks: 'High usage',
+			spall: 'Yes',
+			crack: 'No',
+			uniformCirculation: 'Average',
+			fitForUse: 'Yes'
+		},
+		{
+			cycleNo: 3,
+			stand: 'F1',
+			position: 'Bottom',
+			rolledLength: 600,
+			rolledWeight: 976,
+			cycleStartDate: '2025-02-18 10:00',
+			cycleEndDate: '2025-01-20 16:30',
+			diameterStart: 403,
+			diameterEnd: 389,
+			maintCost: 0.2,
+			remarks: 'High usage',
+			spall: 'Yes',
+			crack: 'Yes',
+			uniformCirculation: 'Poor',
+			fitForUse: 'Yes'
+		},
+		{
+			cycleNo: 4,
+			stand: 'F1',
+			position: 'Bottom',
+			rolledLength: 600,
+			rolledWeight: 968,
+			cycleStartDate: '2025-02-15 14:00',
+			cycleEndDate: '2025-01-20 20:00',
+			diameterStart: 389,
+			diameterEnd: 361,
+			maintCost: 0.3,
+			remarks: 'High usage',
+			spall: 'No',
+			crack: 'Yes',
+			uniformCirculation: 'Average',
+			fitForUse: 'Yes'
+		},
+		{
+			cycleNo: 5,
+			stand: 'F1',
+			position: 'Top',
+			rolledLength: 500,
+			rolledWeight: 890,
+			cycleStartDate: '2025-03-15 12:00 ',
+			cycleEndDate: '2025-01-20 16:00',
+			diameterStart: 361,
+			diameterEnd: 360,
+			maintCost: 0.2,
+			remarks: 'High usage',
+			spall: 'No',
+			crack: 'No',
+			uniformCirculation: 'Good',
+			fitForUse: 'No'
+		}
+	];
+
+  get rollUsageTotalPages(): number {
+    return Math.max(1, Math.ceil(this.rollUsageTotalRows / this.rollUsagePageSize));
+  }
+
+  get rollUsageStartRow(): number {
+    if (this.rollUsageTotalRows === 0) return 0;
+    return (this.rollUsageCurrentPage - 1) * this.rollUsagePageSize + 1;
+  }
+
+  get rollUsageEndRow(): number {
+    if (this.rollUsageTotalRows === 0) return 0;
+    return Math.min(this.rollUsageCurrentPage * this.rollUsagePageSize, this.rollUsageTotalRows);
+  }
+
+  get rollUsagePaginatedData() {
+    const start = (this.rollUsageCurrentPage - 1) * this.rollUsagePageSize;
+    return this.rollUsageRowData.slice(start, start + this.rollUsagePageSize);
+  }
+
+  rollUsageGoToPage(page: number): void {
+    const total = this.rollUsageTotalPages;
+    if (page < 1 || page > total) return;
+    this.rollUsageCurrentPage = page;
+  }
+
+  rollUsageGetPageNumbers(): (number | '...')[] {
+    const total = this.rollUsageTotalPages;
+    const current = this.rollUsageCurrentPage;
+
+    if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+
+    const pages: (number | '...')[] = [];
+    const showLeftEllipsis = current > 4;
+    const showRightEllipsis = current < total - 3;
+
+    pages.push(1);
+
+    if (showLeftEllipsis) pages.push('...');
+
+    const start = Math.max(2, current - 1);
+    const end = Math.min(total - 1, current + 1);
+    for (let p = start; p <= end; p++) pages.push(p);
+
+    if (showRightEllipsis) pages.push('...');
+
+    pages.push(total);
+    return pages;
+  }
+
+  onExportRollUsage(): void {
+    const rows = this.rollUsageRowData;
+    if (!rows || rows.length === 0) return;
+
+    const columnDefs = this.rollUsageColumnDefs;
+    const headers: string[] = [];
+    const fields: string[] = [];
+
+    for (const col of columnDefs) {
+      const field = (col as any).field as string | undefined;
+      if (!field) continue;
+      fields.push(field);
+      headers.push(((col as any).headerName ?? field) as string);
     }
-  ];
+
+    const escape = (val: unknown): string => {
+      const s = val === null || val === undefined ? '' : String(val);
+      const escaped = s.replace(/"/g, '""');
+      return /[",\n]/.test(escaped) ? `"${escaped}"` : escaped;
+    };
+
+    const csvLines: string[] = [];
+    csvLines.push(headers.map(escape).join(','));
+    for (const row of rows) {
+      csvLines.push(fields.map((f) => escape((row as any)[f])).join(','));
+    }
+
+    const blob = new Blob([csvLines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `roll-usage.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
 
   rollUsageRowData = [
-    {
-      cycleNo: 1,
-      plant: 'Mill 1',
-      position: 'Top',
-      rolledLength: 600,
-      cycleStartDate: '2025-03-11',
-      cycleEndDate: '2025-01-15',
-      diameterStart: 483,
-      diameterEnd: 441,
-      maintCost: 0.1,
-      remarks: 'Normal wear',
-      spall: 'No',
-      crack: 'No',
-      uniformCirculation: 'Good',
-      fitForUse: 'Yes'
-    },
-    {
-      cycleNo: 2,
-      plant: 'Mill 1',
-      position: 'Top',
-      rolledLength: 600,
-      cycleStartDate: '2025-03-15',
-      cycleEndDate: '2025-01-20',
-      diameterStart: 441,
-      diameterEnd: 403,
-      maintCost: 0.2,
-      remarks: 'High usage',
-      spall: 'Yes',
-      crack: 'No',
-      uniformCirculation: 'Average',
-      fitForUse: 'Yes'
-    },
-    {
-      cycleNo: 3,
-      plant: 'Mill 1',
-      position: 'Bottom',
-      rolledLength: 600,
-      cycleStartDate: '2025-02-18',
-      cycleEndDate: '2025-01-20',
-      diameterStart: 403,
-      diameterEnd: 389,
-      maintCost: 0.2,
-      remarks: 'High usage',
-      spall: 'Yes',
-      crack: 'Yes',
-      uniformCirculation: 'Poor',
-      fitForUse: 'Yes'
-    },
-    {
-      cycleNo: 4,
-      plant: 'Mill 1',
-      position: 'Bottom',
-      rolledLength: 600,
-      cycleStartDate: '2025-02-15',
-      cycleEndDate: '2025-01-20',
-      diameterStart: 389,
-      diameterEnd: 361,
-      maintCost: 0.3,
-      remarks: 'High usage',
-      spall: 'No',
-      crack: 'Yes',
-      uniformCirculation: 'Average',
-      fitForUse: 'Yes'
-    },
-    {
-      cycleNo: 5,
-      plant: 'Mill 1',
-      position: 'Top',
-      rolledLength: 500,
-      cycleStartDate: '2025-03-15',
-      cycleEndDate: '2025-01-20',
-      diameterStart: 361,
-      diameterEnd: 360,
-      maintCost: 0.2,
-      remarks: 'High usage',
-      spall: 'No',
-      crack: 'No',
-      uniformCirculation: 'Good',
-      fitForUse: 'No'
-    }
-  ];
+		{
+			cycleNo: 1,
+			stand: 'F1',
+			position: 'Top',
+			rolledLength: 600,
+			rolledWeight: 1251,
+			cycleStartDate: '2025-03-11 08:00',
+			cycleEndDate: '2025-01-15 16:30',
+			diameterStart: 483,
+			diameterEnd: 441,
+			maintCost: 0.1,
+			remarks: 'Normal wear',
+			spall: 'No',
+			crack: 'No',
+			uniformCirculation: 'Good',
+			fitForUse: 'Yes'
+		},
+		{
+			cycleNo: 2,
+			stand: 'F1',
+			position: 'Top',
+			rolledLength: 600,
+			rolledWeight: 1180,
+			cycleStartDate: '2025-03-15 06:00',
+			cycleEndDate: '2025-01-20 18:30',
+			diameterStart: 441,
+			diameterEnd: 403,
+			maintCost: 0.2,
+			remarks: 'High usage',
+			spall: 'Yes',
+			crack: 'No',
+			uniformCirculation: 'Average',
+			fitForUse: 'Yes'
+		},
+		{
+			cycleNo: 3,
+			stand: 'F1',
+			position: 'Bottom',
+			rolledLength: 600,
+			rolledWeight: 976,
+			cycleStartDate: '2025-02-18 10:00',
+			cycleEndDate: '2025-01-20 16:30',
+			diameterStart: 403,
+			diameterEnd: 389,
+			maintCost: 0.2,
+			remarks: 'High usage',
+			spall: 'Yes',
+			crack: 'Yes',
+			uniformCirculation: 'Poor',
+			fitForUse: 'Yes'
+		},
+		{
+			cycleNo: 4,
+			stand: 'F1',
+			position: 'Bottom',
+			rolledLength: 600,
+			rolledWeight: 968,
+			cycleStartDate: '2025-02-15 14:00',
+			cycleEndDate: '2025-01-20 20:00',
+			diameterStart: 389,
+			diameterEnd: 361,
+			maintCost: 0.3,
+			remarks: 'High usage',
+			spall: 'No',
+			crack: 'Yes',
+			uniformCirculation: 'Average',
+			fitForUse: 'Yes'
+		},
+		{
+			cycleNo: 5,
+			stand: 'F1',
+			position: 'Top',
+			rolledLength: 500,
+			rolledWeight: 890,
+			cycleStartDate: '2025-03-15 12:00',
+			cycleEndDate: '2025-01-20 16:00',
+			diameterStart: 361,
+			diameterEnd: 360,
+			maintCost: 0.2,
+			remarks: 'High usage',
+			spall: 'No',
+			crack: 'No',
+			uniformCirculation: 'Good',
+			fitForUse: 'No'
+		}
+	];
 
   readonly rollUsageColumnDefs: ColDef[] = [
-    {
-      headerName: 'CYCLE NO',
-      field: 'cycleNo',
-      width: 100,
-      pinned: 'left',
-      cellRenderer: (params: any) =>
-        `<span style="color:#00D4FF;font-weight:700;font-size:14px">${params.value}</span>`
-    },
-    {
-      headerName: 'PLANT',
-      field: 'plant',
-      width: 100,
-      cellStyle: {
-        color: '#E8F0FE',
-        fontSize: '13px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
-      }
-    },
-    {
-      headerName: 'POSITION',
-      field: 'position',
-      width: 110,
-      cellRenderer: (params: any) => {
-        const color = params.value === 'Top' ? '#00D4FF' : '#A78BFA';
-        return `<span style="color:${color};font-weight:600;font-size:13px">${params.value}</span>`;
-      }
-    },
-    {
-      headerName: 'ROLLED LENGTH',
-      field: 'rolledLength',
-      width: 130,
-      cellStyle: {
-        color: '#E8F0FE',
-        fontWeight: '700',
-        fontSize: '13px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
-      }
-    },
-    {
-      headerName: 'CYCLE START DATE',
-      field: 'cycleStartDate',
-      width: 150,
-      cellStyle: {
-        color: '#7B90B8',
-        fontSize: '13px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
-      }
-    },
-    {
-      headerName: 'CYCLE END DATE',
-      field: 'cycleEndDate',
-      width: 140,
-      cellStyle: {
-        color: '#7B90B8',
-        fontSize: '13px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
-      }
-    },
-    {
-      headerName: 'DIAMETER (START)',
-      field: 'diameterStart',
-      width: 145,
-      cellRenderer: (params: any) =>
-        `<span style="color:#00E5A0;font-weight:600;font-size:13px">${params.value}</span>`
-    },
-    {
-      headerName: 'DIAMETER (END)',
-      field: 'diameterEnd',
-      width: 135,
-      cellRenderer: (params: any) =>
-        `<span style="color:#FF8C42;font-weight:600;font-size:13px">${params.value}</span>`
-    },
-    {
-      headerName: 'MAINT COST (MINR)',
-      field: 'maintCost',
-      width: 150,
-      cellRenderer: (params: any) =>
-        `<span style="color:#FF4560;font-weight:600;font-size:13px">${params.value}</span>`
-    },
-    {
-      headerName: 'REMARKS',
-      field: 'remarks',
-      flex: 1,
-      minWidth: 120,
-      cellStyle: {
-        color: '#E8F0FE',
-        fontSize: '13px',
-        display: 'flex',
-        alignItems: 'center'
-      }
-    },
-    {
-      headerName: 'SPALL',
-      field: 'spall',
-      width: 90,
-      cellRenderer: (params: any) => {
-        const isYes = params.value === 'Yes';
-        const color = isYes ? '#FF4560' : '#00E5A0';
-        return `<span style="color:${color};font-weight:600;font-size:13px">${params.value}</span>`;
-      }
-    },
-    {
-      headerName: 'CRACK',
-      field: 'crack',
-      width: 90,
-      cellRenderer: (params: any) => {
-        const isYes = params.value === 'Yes';
-        const color = isYes ? '#FF4560' : '#00E5A0';
-        return `<span style="color:${color};font-weight:600;font-size:13px">${params.value}</span>`;
-      }
-    },
-    {
-      headerName: 'UNIFORM CIRCULATION',
-      field: 'uniformCirculation',
-      width: 170,
-      cellRenderer: (params: any) => {
-        const colorMap: any = {
-          Good: '#00E5A0',
-          Average: '#FF8C42',
-          Poor: '#FF4560'
-        };
-        const color = colorMap[params.value] || '#E8F0FE';
-        return `<span style="color:${color};font-weight:600;font-size:13px">${params.value}</span>`;
-      }
-    },
-    {
-      headerName: 'FIT FOR USE',
-      field: 'fitForUse',
-      width: 110,
-      cellRenderer: (params: any) => {
-        const isYes = params.value === 'Yes';
-        const color = isYes ? '#00E5A0' : '#FF4560';
-        return `<span style="color:${color};font-weight:600;font-size:13px">${params.value}</span>`;
-      }
-    }
-  ];
+		{
+			headerName: 'CYCLE',
+			field: 'cycleNo',
+			width: 100,
+			pinned: 'left',
+			cellRenderer: (params: any) =>
+				`<span style="color:#00D4FF;font-weight:700;font-size:14px">${params.value}</span>`
+		},
+		{
+			headerName: 'STAND',
+			field: 'stand',
+			width: 100,
+			cellStyle: {
+				color: '#FFF',
+				fontSize: '13px',
+				display: 'flex',
+				alignItems: 'center',
+				justifyContent: 'center'
+			}
+		},
+		{
+			headerName: 'POSITION',
+			field: 'position',
+			width: 110
+			// cellRenderer: (params: any) => {
+			// 	const color = params.value === 'Top' ? '#00D4FF' : '#A78BFA';
+			// 	return `<span style="color:${color};font-weight:600;font-size:13px">${params.value}</span>`;
+			// }
+		},
+		{
+			headerName: 'ROLLED LENGTH (KM)',
+			field: 'rolledLength',
+			width: 130,
+			cellStyle: {
+				color: '#FFF',
+				fontWeight: '700',
+				fontSize: '13px',
+				display: 'flex',
+				alignItems: 'center',
+				justifyContent: 'center'
+			}
+		},
+		{
+			headerName: 'ROLLED WEIGHT (TONS)',
+			field: 'rolledWeight',
+			width: 130,
+			cellStyle: {
+				color: '#FFF',
+				fontWeight: '700',
+				fontSize: '13px',
+				display: 'flex',
+				alignItems: 'center',
+				justifyContent: 'center'
+			}
+		},
+		{
+			headerName: 'CYCLE START DATE',
+			field: 'cycleStartDate',
+			width: 150,
+			cellStyle: {
+				color: '#FFF',
+				fontSize: '13px',
+				display: 'flex',
+				alignItems: 'center',
+				justifyContent: 'center'
+			}
+		},
+		{
+			headerName: 'CYCLE END DATE',
+			field: 'cycleEndDate',
+			width: 140,
+			cellStyle: {
+				color: '#FFF',
+				fontSize: '13px',
+				display: 'flex',
+				alignItems: 'center',
+				justifyContent: 'center'
+			}
+		},
+		{
+			headerName: 'IN DIAMETER (MM)',
+			field: 'diameterStart',
+			width: 145
+			// cellRenderer: (params: any) =>
+			// 	`<span style="color:#00E5A0;font-weight:600;font-size:13px">${params.value}</span>`
+		},
+		{
+			headerName: 'OUT DIAMETER (MM)',
+			field: 'diameterEnd',
+			width: 135
+			// cellRenderer: (params: any) =>
+			// 	`<span style="color:#FF8C42;font-weight:600;font-size:13px">${params.value}</span>`
+		},
+		{
+			headerName: 'MAINT COST (MINR)',
+			field: 'maintCost',
+			width: 150
+			// cellRenderer: (params: any) =>
+			// 	`<span style="color:#FF4560;font-weight:600;font-size:13px">${params.value}</span>`
+		},
+		{
+			headerName: 'REMARKS',
+			field: 'remarks',
+			flex: 1,
+			minWidth: 120,
+			cellStyle: {
+				color: '#FFF',
+				fontSize: '13px',
+				display: 'flex',
+				alignItems: 'center'
+			}
+		},
+		{
+			headerName: 'SPALL',
+			field: 'spall',
+			width: 90
+			// cellRenderer: (params: any) => {
+			// 	const isYes = params.value === 'Yes';
+			// 	const color = isYes ? '#FF4560' : '#00E5A0';
+			// 	return `<span style="color:${color};font-weight:600;font-size:13px">${params.value}</span>`;
+			// }
+		},
+		{
+			headerName: 'CRACK',
+			field: 'crack',
+			width: 90
+			// cellRenderer: (params: any) => {
+			// 	const isYes = params.value === 'Yes';
+			// 	const color = isYes ? '#FF4560' : '#00E5A0';
+			// 	return `<span style="color:${color};font-weight:600;font-size:13px">${params.value}</span>`;
+			// }
+		},
+		{
+			headerName: 'UNIFORM CIRCULATION',
+			field: 'uniformCirculation',
+			width: 170
+			// cellRenderer: (params: any) => {
+			// 	const colorMap: any = {
+			// 		Good: '#00E5A0',
+			// 		Average: '#FF8C42',
+			// 		Poor: '#FF4560'
+			// 	};
+			// 	const color = colorMap[params.value] || '#FFF';
+			// 	return `<span style="color:${color};font-weight:600;font-size:13px">${params.value}</span>`;
+			// }
+		},
+		{
+			headerName: 'FIT FOR USE',
+			field: 'fitForUse',
+			width: 110,
+			pinned: 'right',
+			cellRenderer: (params: any) => {
+				const isYes = params.value === 'Yes';
+				const color = isYes ? '#00E5A0' : '#FF4560';
+				return `<span style="color:${color};font-weight:600;font-size:13px">${params.value}</span>`;
+			}
+		}
+	];
 
   readonly defaultColDef: ColDef = {
     resizable: true,
@@ -388,7 +506,7 @@ export class RollAnalysisComponent implements OnInit {
       display: 'flex',
       alignItems: 'center',
       fontSize: '13px',
-      color: '#E8F0FE',
+      color: '#ffffff',
       padding: '0 16px',
       lineHeight: '1.4'
     }
@@ -424,6 +542,7 @@ export class RollAnalysisComponent implements OnInit {
   openDefectDropdown: string | null = null;
 
   ngOnInit(): void {
+    this.rollUsageTotalRows = this.rollUsageRowData.length;
     this.buildDiameterChart();
     this.buildUtilizationChart();
   }
@@ -457,16 +576,14 @@ export class RollAnalysisComponent implements OnInit {
       yAxis: [
         {
           type: 'value',
-          name: 'Diameter (mm)',
           nameTextStyle: { color: '#7B90B8' },
-          axisLabel: { color: '#7B90B8' },
+          axisLabel: { color: '#7B90B8', formatter: (value: number) => `${value} mm` },     
           splitLine: { lineStyle: { color: 'rgba(26,40,68,0.8)' } }
         },
         {
           type: 'value',
-          name: 'Rolled (TON)',
-          nameTextStyle: { color: '#FF8C42' },
-          axisLabel: { color: '#FF8C42' },
+          nameTextStyle: { color: '#7B90B8' },
+          axisLabel: { color: '#7B90B8', formatter: (value: number) => `${value} Tons` },
           splitLine: { show: false },
           position: 'right'
         }
@@ -550,7 +667,7 @@ export class RollAnalysisComponent implements OnInit {
       },
       yAxis: {
         type: 'value',
-        name: 'Utilization (%)',
+        nameTextStyle: { color: '#7B90B8' },
         min: 0,
         max: 100,
         axisLabel: {
@@ -564,7 +681,7 @@ export class RollAnalysisComponent implements OnInit {
           name: 'Utilization',
           type: 'line',
           smooth: true,
-          data: [73, 70, 49, 45, 38, 32, 24],
+          data: [73, 70, 90, 85, 77, 95, 80],
           lineStyle: { color: '#00D4FF', width: 2 },
           itemStyle: { color: '#00D4FF' },
           symbol: 'circle',
@@ -585,19 +702,50 @@ export class RollAnalysisComponent implements OnInit {
     this.openDropdown = this.openDropdown === name ? null : name;
   }
 
-  selectRollId(id: string): void {
-    this.selectedRollId = id;
+  toggleFilterDropdown(name: 'rollId'): void {
+    if (this.openDropdown === name) {
+      this.openDropdown = null;
+      this.resetRollIdSearch();
+      return;
+    }
+
+    this.openDropdown = name;
+    if (name === 'rollId') {
+      this.filteredRollIds = [...this.rollIdOptions];
+      this.rollIdSearchQuery = '';
+    }
+  }
+
+  onRollIdSearchInput(value: string): void {
+    this.rollIdSearchQuery = value;
+    const q = value.trim().toLowerCase();
+    if (!q) {
+      this.filteredRollIds = [...this.rollIdOptions];
+      return;
+    }
+    this.filteredRollIds = this.rollIdOptions.filter((id) => id.toLowerCase().includes(q));
+  }
+
+  private resetRollIdSearch(): void {
+    this.rollIdSearchQuery = '';
+    this.filteredRollIds = [...this.rollIdOptions];
+  }
+
+  selectStand(stand: string): void {
+    this.selectedStand = stand;
     this.openDropdown = null;
   }
 
-  selectMill(mill: string): void {
-    this.selectedMill = mill;
+  selectRollType(type: string): void {
+    this.selectedRollType = type;
     this.openDropdown = null;
   }
 
-  selectPosition(pos: string): void {
-    this.selectedPosition = pos;
+  selectFilterOption(field: 'rollId', value: string): void {
+    this.selectedRollId = value;
+    this.filters.rollId = value;
     this.openDropdown = null;
+    this.resetRollIdSearch();
   }
 
   toggleDefectDropdown(name: string, event: Event): void {

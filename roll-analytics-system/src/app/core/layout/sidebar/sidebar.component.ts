@@ -23,16 +23,18 @@ export class SidebarComponent {
 
   menuItems: MenuItem[] = [
     { path: '/home', label: 'Home', icon: 'home' },
-    { path: '/dashboard', label: 'Dashboard', icon: 'dashboard' },
-    { path: '/roll-details', label: 'Roll Details', icon: 'settings' },
+    { path: '/inventory', label: 'Inventory', icon: 'inventory_2' },
     { path: '/roll-analysis', label: 'Roll Analysis', icon: 'analytics' },
-    { path: '/mill-information', label: 'Mill Information', icon: 'precision_manufacturing' },
-    { path: '/telegram-logs', label: 'Telegram Logs', icon: 'chat' },
+    { path: '/advance-analysis', label: 'Advance Analysis', icon: 'biotech' },
+    { path: '/supplier-analysis', label: 'Supplier Analysis', icon: 'leaderboard' },
     { path: '/alarms', label: 'Alarms', icon: 'notifications_active' },
-    { path: '/performance', label: 'Performance', icon: 'speed' },
-    { path: '/performance-analysis', label: 'Perf. Analysis', icon: 'leaderboard' },
-    { path: '/cost-analysis', label: 'Cost Analysis', icon: 'paid' },
-    { path: '/reports', label: 'Reports', icon: 'summarize' }
+    { path: '/telegram-logs', label: 'Telegram Logs', icon: 'chat' },
+    // { path: '/dashboard', label: 'Dashboard', icon: 'dashboard' },
+    // { path: '/roll-details', label: 'Roll Details', icon: 'settings' },
+    // { path: '/mill-information', label: 'Mill Information', icon: 'precision_manufacturing' },
+    // { path: '/performance', label: 'Performance', icon: 'speed' },
+    // { path: '/cost-analysis', label: 'Cost Analysis', icon: 'paid' },
+    // { path: '/reports', label: 'Reports', icon: 'summarize' }
   ];
 
   toggleSidebar(): void {

@@ -11,19 +11,63 @@
 
   <!-- SECTION 2 - TABS + INLINE STATUS -->
   <div class="tabs-and-status-row">
-    <div class="tabs-track">
-      <button
-        class="tab-item"
-        *ngFor="let tab of tabs"
-        [class.tab-active]="activeTab === tab.key"
-        (click)="switchTab(tab.key)">
-        <span class="material-icons tab-ico">
+    <div style="
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+">
+      <button *ngFor="let tab of tabs"
+              (click)="setActiveTab(tab.id)"
+              style="
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 18px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+          "
+              [style.background]="activeTab === tab.id
+            ? 'rgba(0,212,255,0.12)' : 'transparent'"
+              [style.color]="activeTab === tab.id
+            ? '#00D4FF' : '#7B90B8'"
+              [style.border]="activeTab === tab.id
+            ? '1px solid rgba(0,212,255,0.3)' : '1px solid transparent'">
+
+        <span class="material-icons"
+              style="font-size:16px">
           {{ tab.icon }}
         </span>
-        <span class="tab-lbl">{{ tab.label }}</span>
-        <span class="tab-num" [class.count-active]="activeTab === tab.key">
+
+        <span>{{ tab.label }}</span>
+
+        <span style="
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      padding: 0 6px;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1;
+      transition: all 0.2s ease;
+    "
+        [style.background]="activeTab === tab.id
+      ? 'rgba(0,212,255,0.2)' : 'rgba(255,255,255,0.06)'"
+        [style.color]="activeTab === tab.id
+      ? '#00D4FF' : '#3D5175'">
           {{ tab.count }}
         </span>
+
       </button>
     </div>
 
@@ -50,7 +94,7 @@
 
   <!-- SECTION 4 - AG GRID TABLE -->
   <ag-grid-angular
-    class="ag-theme-custom-dark"
+    class="ag-theme-custom-dark home-table-grid"
     [rowData]="filteredData"
     [columnDefs]="columnDefs"
     [defaultColDef]="defaultColDef"
@@ -116,6 +160,33 @@
           </div>
         </div>
       </div>
+
+      <!-- Export Button -->
+      <button
+        (click)="onExport()"
+        style="
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          background: transparent;
+          border: 1px solid rgba(0,212,255,0.25);
+          border-radius: 10px;
+          padding: 8px 18px;
+          color: #00D4FF;
+          font-size: 13px;
+          font-weight: 600;
+          cursor: pointer;
+          white-space: nowrap;
+          transition: all 0.2s ease;
+          flex-shrink: 0;
+        "
+        (mouseenter)="$any($event.currentTarget).style.background='rgba(0,212,255,0.08)';
+                      $any($event.currentTarget).style.borderColor='rgba(0,212,255,0.5)'"
+        (mouseleave)="$any($event.currentTarget).style.background='transparent';
+                      $any($event.currentTarget).style.borderColor='rgba(0,212,255,0.25)'">
+        <span class="material-icons" style="font-size:16px">download</span>
+        Export
+      </button>
     </div>
   </div>
 </div>

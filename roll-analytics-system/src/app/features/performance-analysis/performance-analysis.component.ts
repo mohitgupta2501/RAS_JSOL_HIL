@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AgGridAngular } from 'ag-grid-angular';
@@ -38,14 +38,23 @@ interface FitnessRow {
   styleUrl: './performance-analysis.component.scss'
 })
 export class PerformanceAnalysisComponent implements OnInit {
-  // Filter dropdown state
+  millOptions = ['E1', 'R1', 'R2', 'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7'];
+  rollOptions = ['WR', 'BUR', 'Edger Roll', 'Pinch Roll'];
+  selectedMill = 'E1';
+  selectedRoll = 'WR';
   openDropdown: string | null = null;
 
-  readonly millOptions = ['E1', 'R1', 'R2', 'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7'];
-  readonly rollOptions = ['WR', 'BUR', 'Edger Roll', 'Pinch Roll'];
+  supplierPerfCurrentPage = 1;
+  supplierPerfPageSize = 10;
+  supplierPerfTotalRows = 0;
 
-  selectedMill = this.millOptions[0];
-  selectedRoll = this.rollOptions[0];
+  fitnessMatrixCurrentPage = 1;
+  fitnessMatrixPageSize = 10;
+  fitnessMatrixTotalRows = 0;
+
+  thinkerMatrixCurrentPage = 1;
+  thinkerMatrixPageSize = 10;
+  thinkerMatrixTotalRows = 0;
 
   // AG Grid data
   readonly rowData: SupplierPerformanceRow[] = [
@@ -98,7 +107,8 @@ export class PerformanceAnalysisComponent implements OnInit {
       headerName: 'SUPPLIER',
       field: 'supplier',
       pinned: 'left',
-      width: 130,
+      width: 140,
+      headerClass: 'perf-white-header',
       cellStyle: {
         display: 'flex',
         alignItems: 'center',
@@ -113,66 +123,77 @@ export class PerformanceAnalysisComponent implements OnInit {
       headerName: 'AVG ROLLED LENGTH (KM)',
       field: 'avgRolledLength',
       width: 145,
+      headerClass: 'perf-white-header',
       cellRenderer: this.getCellRenderer('avgRolledLength')
     },
     {
       headerName: 'AVG ROLLED TONAGE (T/MM)',
       field: 'avgRolledTonage',
       width: 155,
+      headerClass: 'perf-white-header',
       cellRenderer: this.getCellRenderer('avgRolledTonage')
     },
     {
       headerName: 'AVG UTIL (%)',
       field: 'avgUtilization',
       width: 110,
+      headerClass: 'perf-white-header',
       cellRenderer: this.getCellRenderer('avgUtilization')
     },
     {
       headerName: 'AVG HOURLY TONAGE (T/HR)',
       field: 'avgHourlyTonage',
       width: 155,
+      headerClass: 'perf-white-header',
       cellRenderer: this.getCellRenderer('avgHourlyTonage')
     },
     {
       headerName: 'TOTAL BREAKDOWN',
       field: 'totalBreakdown',
       width: 135,
+      headerClass: 'perf-white-header',
       cellRenderer: this.getCellRenderer('totalBreakdown')
     },
     {
       headerName: 'AVG COOLANT CONC (%)',
       field: 'avgCoolantConc',
       width: 140,
+      headerClass: 'perf-white-header',
       cellRenderer: this.getCellRenderer('avgCoolantConc')
     },
     {
       headerName: 'AVG PURCHASE COST (MINR)',
       field: 'avgPurchaseCost',
       width: 155,
+      headerClass: 'perf-white-header',
       cellRenderer: this.getCellRenderer('avgPurchaseCost')
     },
     {
       headerName: 'AVG CYCLES',
       field: 'avgCycles',
       width: 110,
+      headerClass: 'perf-white-header',
       cellRenderer: this.getCellRenderer('avgCycles')
     },
     {
       headerName: 'AVG LEAD TIME (MO)',
       field: 'avgLeadTime',
       width: 135,
+      headerClass: 'perf-white-header',
       cellRenderer: this.getCellRenderer('avgLeadTime')
     },
     {
       headerName: 'AVG COST PER KM',
       field: 'avgCostPerKm',
       width: 130,
+      headerClass: 'perf-white-header',
       cellRenderer: this.getCellRenderer('avgCostPerKm')
     },
     {
       headerName: 'RATING (/10)',
       field: 'rating',
       width: 120,
+      headerClass: 'perf-white-header',
       cellRenderer: (params: any) => {
         const val = params.value;
         const stars = Math.round(val / 2);
@@ -191,6 +212,9 @@ export class PerformanceAnalysisComponent implements OnInit {
     resizable: false,
     sortable: false,
     suppressMovable: true,
+    wrapHeaderText: true,
+    autoHeaderHeight: true,
+    headerClass: 'perf-white-header',
     cellStyle: {
       display: 'flex',
       alignItems: 'center',
@@ -210,6 +234,141 @@ export class PerformanceAnalysisComponent implements OnInit {
     { supplier: 'Castolin Eutectic', hc: 4.5, mc: 4.4, lc: 4.3, thin: 4.6, rg: 4.1, country: 'Switzerland', rolls: 10 },
     { supplier: 'SMS Group', hc: 4.3, mc: 4.5, lc: 4.6, thin: 4.4, rg: 4.7, country: 'Germany', rolls: 5 }
   ];
+
+  get supplierPerfTotalPages(): number {
+    return Math.ceil(this.supplierPerfTotalRows / this.supplierPerfPageSize);
+  }
+
+  get supplierPerfPaginatedData(): any[] {
+    const start = (this.supplierPerfCurrentPage - 1) * this.supplierPerfPageSize;
+    return this.rowData.slice(start, start + this.supplierPerfPageSize);
+  }
+
+  supplierPerfGoToPage(page: number) {
+    if (page >= 1 && page <= this.supplierPerfTotalPages) {
+      this.supplierPerfCurrentPage = page;
+    }
+  }
+
+  supplierPerfGetPageNumbers(): number[] {
+    const total = this.supplierPerfTotalPages;
+    const current = this.supplierPerfCurrentPage;
+    if (total <= 7) {
+      return Array.from({ length: total }, (_, i) => i + 1);
+    }
+    const pages: (number | string)[] = [1];
+    if (current > 3) pages.push(-1);
+    for (let i = Math.max(2, current - 1); i <= Math.min(total - 1, current + 1); i++) {
+      pages.push(i);
+    }
+    if (current < total - 2) pages.push(-1);
+    pages.push(total);
+    return pages as number[];
+  }
+
+  onExportSupplierPerf() {
+    const fields = (this.columnDefs || []).map((c: any) => c.field).filter(Boolean);
+    const headers = fields.length ? fields : Object.keys(this.rowData[0] || {});
+    const rows = this.rowData.map((r: any) => headers.map(h => r[h] ?? ''));
+    const csv = [headers, ...rows].map(r => r.join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `supplier-performance-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  }
+
+  get fitnessMatrixTotalPages(): number {
+    return Math.ceil(this.fitnessMatrixTotalRows / this.fitnessMatrixPageSize);
+  }
+
+  get fitnessMatrixPaginatedData(): any[] {
+    const start = (this.fitnessMatrixCurrentPage - 1) * this.fitnessMatrixPageSize;
+    return this.matrixRowData.slice(start, start + this.fitnessMatrixPageSize);
+  }
+
+  fitnessMatrixGoToPage(page: number) {
+    if (page >= 1 && page <= this.fitnessMatrixTotalPages) {
+      this.fitnessMatrixCurrentPage = page;
+    }
+  }
+
+  fitnessMatrixGetPageNumbers(): number[] {
+    const total = this.fitnessMatrixTotalPages;
+    const current = this.fitnessMatrixCurrentPage;
+    if (total <= 7) {
+      return Array.from({ length: total }, (_, i) => i + 1);
+    }
+    const pages: (number | string)[] = [1];
+    if (current > 3) pages.push(-1);
+    for (let i = Math.max(2, current - 1); i <= Math.min(total - 1, current + 1); i++) {
+      pages.push(i);
+    }
+    if (current < total - 2) pages.push(-1);
+    pages.push(total);
+    return pages as number[];
+  }
+
+  onExportFitnessMatrix() {
+    const fields = (this.fitnessColDefs || []).map((c: any) => c.field).filter(Boolean);
+    const headers = fields.length ? fields : Object.keys(this.matrixRowData[0] || {});
+    const rows = this.matrixRowData.map((r: any) => headers.map(h => r[h] ?? ''));
+    const csv = [headers, ...rows].map(r => r.join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `fitness-matrix-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  }
+
+  get thinkerMatrixTotalPages(): number {
+    return Math.ceil(this.thinkerMatrixTotalRows / this.thinkerMatrixPageSize);
+  }
+
+  get thinkerMatrixPaginatedData(): any[] {
+    const start = (this.thinkerMatrixCurrentPage - 1) * this.thinkerMatrixPageSize;
+    return this.matrixRowData.slice(start, start + this.thinkerMatrixPageSize);
+  }
+
+  thinkerMatrixGoToPage(page: number) {
+    if (page >= 1 && page <= this.thinkerMatrixTotalPages) {
+      this.thinkerMatrixCurrentPage = page;
+    }
+  }
+
+  thinkerMatrixGetPageNumbers(): number[] {
+    const total = this.thinkerMatrixTotalPages;
+    const current = this.thinkerMatrixCurrentPage;
+    if (total <= 7) {
+      return Array.from({ length: total }, (_, i) => i + 1);
+    }
+    const pages: (number | string)[] = [1];
+    if (current > 3) pages.push(-1);
+    for (let i = Math.max(2, current - 1); i <= Math.min(total - 1, current + 1); i++) {
+      pages.push(i);
+    }
+    if (current < total - 2) pages.push(-1);
+    pages.push(total);
+    return pages as number[];
+  }
+
+  onExportThinkerMatrix() {
+    const fields = (this.thinkerColDefs || []).map((c: any) => c.field).filter(Boolean);
+    const headers = fields.length ? fields : Object.keys(this.matrixRowData[0] || {});
+    const rows = this.matrixRowData.map((r: any) => headers.map(h => r[h] ?? ''));
+    const csv = [headers, ...rows].map(r => r.join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `thinker-matrix-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  }
 
   matrixDefaultColDef: ColDef = {
     resizable: false,
@@ -266,7 +425,7 @@ export class PerformanceAnalysisComponent implements OnInit {
       align-items:center;justify-content:center;
       height:100%;width:100%;
     ">
-      <span style="color:#E8F0FE;font-size:14px;font-weight:700;line-height:1.2">
+      <span style="color:#E8F0FE;font-size:13px;font-weight:700;line-height:1.2">
         ${params.displayName}
       </span>
       <span style="color:#3D5175;font-size:10px;font-weight:600;margin-top:4px;line-height:1">
@@ -279,30 +438,30 @@ export class PerformanceAnalysisComponent implements OnInit {
   fitnessColDefs: ColDef[] = [];
   thinkerColDefs: ColDef[] = [];
 
-  // Dropdown helpers
-  toggleDropdown(name: string): void {
+  toggleDropdown(name: string, event: Event) {
+    event.stopPropagation();
     this.openDropdown = this.openDropdown === name ? null : name;
   }
 
-  selectMill(opt: string): void {
-    this.selectedMill = opt;
+  selectMill(value: string) {
+    this.selectedMill = value;
     this.openDropdown = null;
   }
 
-  selectRoll(opt: string): void {
-    this.selectedRoll = opt;
+  selectRoll(value: string) {
+    this.selectedRoll = value;
     this.openDropdown = null;
-  }
-
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: Event): void {
-    if (!(event.target as HTMLElement).closest('.custom-select')) {
-      this.openDropdown = null;
-    }
   }
 
   ngOnInit(): void {
+    document.addEventListener('click', () => {
+      this.openDropdown = null;
+    });
     this.buildMatrixColDefs();
+
+    this.supplierPerfTotalRows = this.rowData.length;
+    this.fitnessMatrixTotalRows = this.matrixRowData.length;
+    this.thinkerMatrixTotalRows = this.matrixRowData.length;
   }
 
   // Helpers
@@ -342,7 +501,7 @@ export class PerformanceAnalysisComponent implements OnInit {
           align-items:center;justify-content:center;
           height:100%;width:100%;padding:8px 0;
         ">
-          <span style="color:#E8F0FE;font-size:14px;font-weight:700;line-height:1.2">
+          <span style="color:#E8F0FE;font-size:13px;font-weight:700;line-height:1.2">
             ${headerName}
           </span>
           <span style="color:#3D5175;font-size:10px;font-weight:600;margin-top:4px;">
@@ -373,7 +532,7 @@ export class PerformanceAnalysisComponent implements OnInit {
         field: 'supplier',
         pinned: 'left',
         width: 210,
-        headerClass: 'supplier-col-header',
+        headerClass: 'perf-matrix-left-header',
         cellStyle: {
           display: 'flex',
           alignItems: 'center',
@@ -392,7 +551,7 @@ export class PerformanceAnalysisComponent implements OnInit {
         headerName: 'COUNTRY',
         field: 'country',
         width: 140,
-        headerClass: 'center-col-header',
+        headerClass: 'perf-matrix-center-header',
         cellStyle: {
           display: 'flex',
           alignItems: 'center',
@@ -405,7 +564,7 @@ export class PerformanceAnalysisComponent implements OnInit {
         headerName: 'ROLLS',
         field: 'rolls',
         width: 90,
-        headerClass: 'center-col-header',
+        headerClass: 'perf-matrix-center-header',
         cellStyle: {
           display: 'flex',
           alignItems: 'center',

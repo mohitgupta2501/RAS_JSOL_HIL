@@ -1,72 +1,204 @@
-<div class="perf-analysis-page">
+<div class="perf-analysis-page" (click)="openDropdown = null">
   <!-- Breadcrumb -->
   <div class="breadcrumb">
     <span class="breadcrumb-item muted">Home</span>
     <span class="material-icons breadcrumb-sep">chevron_right</span>
-    <span class="breadcrumb-item active">Performance Analysis</span>
+    <span class="breadcrumb-item active">Supplier Analysis</span>
   </div>
 
   <!-- Filter bar -->
   <div class="pa-filter-card">
-    <div class="pa-filter-heading">
-      <span class="title">Performance Analysis</span>
-      <span class="subtitle">Compare supplier performance across key KPIs</span>
-    </div>
 
-    <div class="pa-filter-groups">
-      <div class="filter-group">
-        <label class="filter-label">SELECT MILL</label>
-        <div
-          class="custom-select"
-          [class.open]="openDropdown === 'mill'"
-          (click)="$event.stopPropagation()">
-          <div class="select-trigger" (click)="toggleDropdown('mill')">
-            <span class="select-value">{{ selectedMill }}</span>
-            <span class="material-icons select-arrow">expand_more</span>
+    <div style="
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      flex-wrap: nowrap;
+      gap: 24px;
+      padding: 16px 24px;
+      width: 100%;
+      box-sizing: border-box;
+    ">
+
+      <!-- SELECT MILL -->
+      <div style="
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+        flex-shrink: 0;
+        position: relative;
+      ">
+        <span style="
+          color: #3D5175;
+          font-size: 10px;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          white-space: nowrap;
+        ">SELECT MILL</span>
+
+        <div style="position: relative;">
+          <div
+            (click)="toggleDropdown('mill', $event)"
+            style="
+              width: 160px;
+              background: #0D1628;
+              border: 1px solid rgba(0,212,255,0.15);
+              border-radius: 8px;
+              padding: 9px 14px;
+              color: #E8F0FE;
+              font-size: 13px;
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              cursor: pointer;
+              user-select: none;
+              box-sizing: border-box;
+              height: 40px;
+            "
+            [style.border-color]="openDropdown === 'mill'
+              ? 'rgba(0,212,255,0.5)' : 'rgba(0,212,255,0.15)'">
+            <span>{{ selectedMill }}</span>
+            <span class="material-icons" style="
+              color: #7B90B8; font-size: 18px;
+              transition: transform 0.2s ease;
+            "
+            [style.transform]="openDropdown === 'mill'
+              ? 'rotate(180deg)' : 'rotate(0deg)'">
+              expand_more
+            </span>
           </div>
-          <div class="select-options">
-            <div
-              class="select-option"
-              *ngFor="let opt of millOptions"
-              [class.selected]="selectedMill === opt"
-              (click)="selectMill(opt)">
-              <span
-                class="option-check material-icons"
-                *ngIf="selectedMill === opt">
-                check
-              </span>
+
+          <div *ngIf="openDropdown === 'mill'"
+               (click)="$event.stopPropagation()"
+               style="
+                 position: absolute;
+                 top: calc(100% + 4px); left: 0;
+                 width: 160px;
+                 background: #0D1628;
+                 border: 1px solid rgba(0,212,255,0.2);
+                 border-radius: 8px;
+                 z-index: 9999;
+                 box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+                 overflow: hidden;
+               ">
+            <div *ngFor="let opt of millOptions"
+                 (click)="selectMill(opt)"
+                 [style.color]="selectedMill === opt ? '#00D4FF' : '#7B90B8'"
+                 [style.background]="selectedMill === opt
+                   ? 'rgba(0,212,255,0.06)' : 'transparent'"
+                 style="
+                   padding: 9px 14px;
+                   font-size: 13px;
+                   cursor: pointer;
+                   display: flex;
+                   align-items: center;
+                   justify-content: space-between;
+                   transition: background 0.15s ease;
+                 ">
               {{ opt }}
+              <span *ngIf="selectedMill === opt"
+                    class="material-icons"
+                    style="font-size:14px;color:#00D4FF">check</span>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="filter-group">
-        <label class="filter-label">SELECT ROLL</label>
-        <div
-          class="custom-select"
-          [class.open]="openDropdown === 'roll'"
-          (click)="$event.stopPropagation()">
-          <div class="select-trigger" (click)="toggleDropdown('roll')">
-            <span class="select-value">{{ selectedRoll }}</span>
-            <span class="material-icons select-arrow">expand_more</span>
+      <!-- Vertical divider -->
+      <div style="
+        width: 1px; height: 32px;
+        background: rgba(255,255,255,0.06);
+        flex-shrink: 0;
+      "></div>
+
+      <!-- SELECT ROLL -->
+      <div style="
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+        flex-shrink: 0;
+        position: relative;
+      ">
+        <span style="
+          color: #3D5175;
+          font-size: 10px;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          white-space: nowrap;
+        ">SELECT ROLL</span>
+
+        <div style="position: relative;">
+          <div
+            (click)="toggleDropdown('roll', $event)"
+            style="
+              width: 160px;
+              background: #0D1628;
+              border: 1px solid rgba(0,212,255,0.15);
+              border-radius: 8px;
+              padding: 9px 14px;
+              color: #E8F0FE;
+              font-size: 13px;
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              cursor: pointer;
+              user-select: none;
+              box-sizing: border-box;
+              height: 40px;
+            "
+            [style.border-color]="openDropdown === 'roll'
+              ? 'rgba(0,212,255,0.5)' : 'rgba(0,212,255,0.15)'">
+            <span>{{ selectedRoll }}</span>
+            <span class="material-icons" style="
+              color: #7B90B8; font-size: 18px;
+              transition: transform 0.2s ease;
+            "
+            [style.transform]="openDropdown === 'roll'
+              ? 'rotate(180deg)' : 'rotate(0deg)'">
+              expand_more
+            </span>
           </div>
-          <div class="select-options">
-            <div
-              class="select-option"
-              *ngFor="let opt of rollOptions"
-              [class.selected]="selectedRoll === opt"
-              (click)="selectRoll(opt)">
-              <span
-                class="option-check material-icons"
-                *ngIf="selectedRoll === opt">
-                check
-              </span>
+
+          <div *ngIf="openDropdown === 'roll'"
+               (click)="$event.stopPropagation()"
+               style="
+                 position: absolute;
+                 top: calc(100% + 4px); left: 0;
+                 width: 160px;
+                 background: #0D1628;
+                 border: 1px solid rgba(0,212,255,0.2);
+                 border-radius: 8px;
+                 z-index: 9999;
+                 box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+                 overflow: hidden;
+               ">
+            <div *ngFor="let opt of rollOptions"
+                 (click)="selectRoll(opt)"
+                 [style.color]="selectedRoll === opt ? '#00D4FF' : '#7B90B8'"
+                 [style.background]="selectedRoll === opt
+                   ? 'rgba(0,212,255,0.06)' : 'transparent'"
+                 style="
+                   padding: 9px 14px;
+                   font-size: 13px;
+                   cursor: pointer;
+                   display: flex;
+                   align-items: center;
+                   justify-content: space-between;
+                   transition: background 0.15s ease;
+                 ">
               {{ opt }}
+              <span *ngIf="selectedRoll === opt"
+                    class="material-icons"
+                    style="font-size:14px;color:#00D4FF">check</span>
             </div>
           </div>
         </div>
       </div>
+
     </div>
   </div>
 
@@ -77,9 +209,9 @@
         <span class="material-icons header-icon">table_chart</span>
         <div class="texts">
           <div class="title">Supplier Performance Comparison</div>
-          <div class="subtitle">
+          <!-- <div class="subtitle">
             Transposed KPI view with color-coded best and worst values
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
@@ -88,7 +220,7 @@
         <ag-grid-angular
           class="ag-theme-custom-dark supplier-perf-grid"
           style="width:100%"
-          [rowData]="rowData"
+          [rowData]="supplierPerfPaginatedData"
           [columnDefs]="columnDefs"
           [defaultColDef]="defaultColDef"
           [rowHeight]="56"
@@ -97,6 +229,122 @@
           [suppressHorizontalScroll]="false"
           [suppressCellFocus]="true">
         </ag-grid-angular>
+
+        <div style="
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:nowrap;gap:16px;padding:12px 20px;
+  border-top:1px solid rgba(255,255,255,0.06);
+  background:rgba(10,20,40,0.4);
+  border-radius:0 0 12px 12px;
+ ">
+          <span style="color:#7B90B8;font-size:13px;
+               white-space:nowrap;flex-shrink:0">
+            Showing
+            <strong style="color:#E8F0FE">
+              {{ (supplierPerfCurrentPage-1)*supplierPerfPageSize + 1 }}–{{
+                supplierPerfCurrentPage*supplierPerfPageSize > supplierPerfTotalRows
+                  ? supplierPerfTotalRows
+                  : supplierPerfCurrentPage*supplierPerfPageSize
+              }}
+            </strong>
+            of
+            <strong style="color:#E8F0FE">{{ supplierPerfTotalRows }}</strong>
+            suppliers
+          </span>
+
+          <div style="display:flex;align-items:center;gap:6px">
+            <button
+              (click)="supplierPerfGoToPage(supplierPerfCurrentPage - 1)"
+              [disabled]="supplierPerfCurrentPage === 1"
+              [style.opacity]="supplierPerfCurrentPage === 1 ? '0.4' : '1'"
+              style="width:34px;height:34px;border-radius:8px;
+             background:transparent;
+             border:1px solid rgba(255,255,255,0.1);
+             color:#7B90B8;cursor:pointer;
+             display:flex;align-items:center;justify-content:center;
+             transition:all 0.2s ease">
+              <span class="material-icons" style="font-size:18px">
+                chevron_left
+              </span>
+            </button>
+
+            <ng-container *ngFor="let p of supplierPerfGetPageNumbers()">
+              <span *ngIf="p === -1"
+                    style="color:#3D5175;font-size:13px;padding:0 4px">
+                ...
+              </span>
+              <button *ngIf="p !== -1"
+                      (click)="supplierPerfGoToPage(p)"
+                      [style.background]="supplierPerfCurrentPage === p
+              ? 'linear-gradient(135deg,#2563EB,#1d4ed8)' : 'transparent'"
+                      [style.color]="supplierPerfCurrentPage === p
+              ? '#fff' : '#7B90B8'"
+                      [style.border]="supplierPerfCurrentPage === p
+              ? 'none' : '1px solid rgba(255,255,255,0.1)'"
+                      style="width:34px;height:34px;border-radius:8px;
+                   cursor:pointer;font-size:13px;font-weight:600;
+                   display:flex;align-items:center;justify-content:center;
+                   transition:all 0.2s ease">
+                {{ p }}
+              </button>
+            </ng-container>
+
+            <button
+              (click)="supplierPerfGoToPage(supplierPerfCurrentPage + 1)"
+              [disabled]="supplierPerfCurrentPage === supplierPerfTotalPages"
+              [style.opacity]="supplierPerfCurrentPage === supplierPerfTotalPages
+        ? '0.4' : '1'"
+              style="width:34px;height:34px;border-radius:8px;
+             background:transparent;
+             border:1px solid rgba(255,255,255,0.1);
+             color:#7B90B8;cursor:pointer;
+             display:flex;align-items:center;justify-content:center;
+             transition:all 0.2s ease">
+              <span class="material-icons" style="font-size:18px">
+                chevron_right
+              </span>
+            </button>
+          </div>
+
+          <div style="display:flex;align-items:center;gap:12px;flex-shrink:0">
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="color:#7B90B8;font-size:12px;white-space:nowrap">
+                Rows per page
+              </span>
+              <select
+                [(ngModel)]="supplierPerfPageSize"
+                (change)="supplierPerfCurrentPage = 1"
+                style="background:#0D1628;
+               border:1px solid rgba(0,212,255,0.15);
+               border-radius:6px;color:#E8F0FE;
+               font-size:12px;padding:6px 10px;
+               cursor:pointer;outline:none">
+                <option [value]="5">5</option>
+                <option [value]="10">10</option>
+                <option [value]="15">15</option>
+                <option [value]="20">20</option>
+              </select>
+            </div>
+
+            <button
+              (click)="onExportSupplierPerf()"
+              style="display:flex;align-items:center;gap:8px;
+             background:transparent;
+             border:1px solid rgba(0,212,255,0.25);
+             border-radius:10px;padding:8px 18px;
+             color:#00D4FF;font-size:13px;font-weight:600;
+             cursor:pointer;white-space:nowrap;
+             transition:all 0.2s ease"
+              (mouseenter)="$any($event.currentTarget).style.background=
+        'rgba(0,212,255,0.08)';
+        $any($event.currentTarget).style.borderColor='rgba(0,212,255,0.5)'"
+              (mouseleave)="$any($event.currentTarget).style.background='transparent';
+        $any($event.currentTarget).style.borderColor='rgba(0,212,255,0.25)'">
+              <span class="material-icons" style="font-size:16px">download</span>
+              Export
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -127,16 +375,16 @@
         <div style="color:#E8F0FE;font-size:15px;font-weight:700">
           Supplier-Grade Fitness Matrix
         </div>
-        <div style="color:#3D5175;font-size:11px;margin-top:2px">
+        <!-- <div style="color:#3D5175;font-size:11px;margin-top:2px">
           Rating 1.0–5.0 | Color coded by suitability
-        </div>
+        </div> -->
       </div>
     </div>
 
     <!-- AG Grid -->
     <ag-grid-angular
       class="ag-theme-custom-dark matrix-ag-grid"
-      [rowData]="matrixRowData"
+      [rowData]="fitnessMatrixPaginatedData"
       [columnDefs]="fitnessColDefs"
       [defaultColDef]="matrixDefaultColDef"
       [domLayout]="'autoHeight'"
@@ -146,6 +394,122 @@
       [suppressHorizontalScroll]="true"
       style="width:100%">
     </ag-grid-angular>
+
+    <div style="
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:nowrap;gap:16px;padding:12px 20px;
+  border-top:1px solid rgba(255,255,255,0.06);
+  background:rgba(10,20,40,0.4);
+  border-radius:0 0 12px 12px;
+ ">
+      <span style="color:#7B90B8;font-size:13px;
+               white-space:nowrap;flex-shrink:0">
+        Showing
+        <strong style="color:#E8F0FE">
+          {{ (fitnessMatrixCurrentPage-1)*fitnessMatrixPageSize + 1 }}–{{
+            fitnessMatrixCurrentPage*fitnessMatrixPageSize > fitnessMatrixTotalRows
+              ? fitnessMatrixTotalRows
+              : fitnessMatrixCurrentPage*fitnessMatrixPageSize
+          }}
+        </strong>
+        of
+        <strong style="color:#E8F0FE">{{ fitnessMatrixTotalRows }}</strong>
+        suppliers
+      </span>
+
+      <div style="display:flex;align-items:center;gap:6px">
+        <button
+          (click)="fitnessMatrixGoToPage(fitnessMatrixCurrentPage - 1)"
+          [disabled]="fitnessMatrixCurrentPage === 1"
+          [style.opacity]="fitnessMatrixCurrentPage === 1 ? '0.4' : '1'"
+          style="width:34px;height:34px;border-radius:8px;
+             background:transparent;
+             border:1px solid rgba(255,255,255,0.1);
+             color:#7B90B8;cursor:pointer;
+             display:flex;align-items:center;justify-content:center;
+             transition:all 0.2s ease">
+          <span class="material-icons" style="font-size:18px">
+            chevron_left
+          </span>
+        </button>
+
+        <ng-container *ngFor="let p of fitnessMatrixGetPageNumbers()">
+          <span *ngIf="p === -1"
+                style="color:#3D5175;font-size:13px;padding:0 4px">
+            ...
+          </span>
+          <button *ngIf="p !== -1"
+                  (click)="fitnessMatrixGoToPage(p)"
+                  [style.background]="fitnessMatrixCurrentPage === p
+              ? 'linear-gradient(135deg,#2563EB,#1d4ed8)' : 'transparent'"
+                  [style.color]="fitnessMatrixCurrentPage === p
+              ? '#fff' : '#7B90B8'"
+                  [style.border]="fitnessMatrixCurrentPage === p
+              ? 'none' : '1px solid rgba(255,255,255,0.1)'"
+                  style="width:34px;height:34px;border-radius:8px;
+                   cursor:pointer;font-size:13px;font-weight:600;
+                   display:flex;align-items:center;justify-content:center;
+                   transition:all 0.2s ease">
+            {{ p }}
+          </button>
+        </ng-container>
+
+        <button
+          (click)="fitnessMatrixGoToPage(fitnessMatrixCurrentPage + 1)"
+          [disabled]="fitnessMatrixCurrentPage === fitnessMatrixTotalPages"
+          [style.opacity]="fitnessMatrixCurrentPage === fitnessMatrixTotalPages
+        ? '0.4' : '1'"
+          style="width:34px;height:34px;border-radius:8px;
+             background:transparent;
+             border:1px solid rgba(255,255,255,0.1);
+             color:#7B90B8;cursor:pointer;
+             display:flex;align-items:center;justify-content:center;
+             transition:all 0.2s ease">
+          <span class="material-icons" style="font-size:18px">
+            chevron_right
+          </span>
+        </button>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:12px;flex-shrink:0">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="color:#7B90B8;font-size:12px;white-space:nowrap">
+            Rows per page
+          </span>
+          <select
+            [(ngModel)]="fitnessMatrixPageSize"
+            (change)="fitnessMatrixCurrentPage = 1"
+            style="background:#0D1628;
+               border:1px solid rgba(0,212,255,0.15);
+               border-radius:6px;color:#E8F0FE;
+               font-size:12px;padding:6px 10px;
+               cursor:pointer;outline:none">
+            <option [value]="5">5</option>
+            <option [value]="10">10</option>
+            <option [value]="15">15</option>
+            <option [value]="20">20</option>
+          </select>
+        </div>
+
+        <button
+          (click)="onExportFitnessMatrix()"
+          style="display:flex;align-items:center;gap:8px;
+             background:transparent;
+             border:1px solid rgba(0,212,255,0.25);
+             border-radius:10px;padding:8px 18px;
+             color:#00D4FF;font-size:13px;font-weight:600;
+             cursor:pointer;white-space:nowrap;
+             transition:all 0.2s ease"
+          (mouseenter)="$any($event.currentTarget).style.background=
+        'rgba(0,212,255,0.08)';
+        $any($event.currentTarget).style.borderColor='rgba(0,212,255,0.5)'"
+          (mouseleave)="$any($event.currentTarget).style.background='transparent';
+        $any($event.currentTarget).style.borderColor='rgba(0,212,255,0.25)'">
+          <span class="material-icons" style="font-size:16px">download</span>
+          Export
+        </button>
+      </div>
+    </div>
 
     <!-- Legend -->
     <div style="
@@ -202,16 +566,16 @@
         <div style="color:#E8F0FE;font-size:15px;font-weight:700">
           Thinker Gauge Matrix
         </div>
-        <div style="color:#3D5175;font-size:11px;margin-top:2px">
+        <!-- <div style="color:#3D5175;font-size:11px;margin-top:2px">
           Performance gauge across thickness categories
-        </div>
+        </div> -->
       </div>
     </div>
 
     <!-- AG Grid -->
     <ag-grid-angular
       class="ag-theme-custom-dark matrix-ag-grid"
-      [rowData]="matrixRowData"
+      [rowData]="thinkerMatrixPaginatedData"
       [columnDefs]="thinkerColDefs"
       [defaultColDef]="matrixDefaultColDef"
       [domLayout]="'autoHeight'"
@@ -221,6 +585,122 @@
       [suppressHorizontalScroll]="true"
       style="width:100%">
     </ag-grid-angular>
+
+    <div style="
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:nowrap;gap:16px;padding:12px 20px;
+  border-top:1px solid rgba(255,255,255,0.06);
+  background:rgba(10,20,40,0.4);
+  border-radius:0 0 12px 12px;
+ ">
+      <span style="color:#7B90B8;font-size:13px;
+               white-space:nowrap;flex-shrink:0">
+        Showing
+        <strong style="color:#E8F0FE">
+          {{ (thinkerMatrixCurrentPage-1)*thinkerMatrixPageSize + 1 }}–{{
+            thinkerMatrixCurrentPage*thinkerMatrixPageSize > thinkerMatrixTotalRows
+              ? thinkerMatrixTotalRows
+              : thinkerMatrixCurrentPage*thinkerMatrixPageSize
+          }}
+        </strong>
+        of
+        <strong style="color:#E8F0FE">{{ thinkerMatrixTotalRows }}</strong>
+        suppliers
+      </span>
+
+      <div style="display:flex;align-items:center;gap:6px">
+        <button
+          (click)="thinkerMatrixGoToPage(thinkerMatrixCurrentPage - 1)"
+          [disabled]="thinkerMatrixCurrentPage === 1"
+          [style.opacity]="thinkerMatrixCurrentPage === 1 ? '0.4' : '1'"
+          style="width:34px;height:34px;border-radius:8px;
+             background:transparent;
+             border:1px solid rgba(255,255,255,0.1);
+             color:#7B90B8;cursor:pointer;
+             display:flex;align-items:center;justify-content:center;
+             transition:all 0.2s ease">
+          <span class="material-icons" style="font-size:18px">
+            chevron_left
+          </span>
+        </button>
+
+        <ng-container *ngFor="let p of thinkerMatrixGetPageNumbers()">
+          <span *ngIf="p === -1"
+                style="color:#3D5175;font-size:13px;padding:0 4px">
+            ...
+          </span>
+          <button *ngIf="p !== -1"
+                  (click)="thinkerMatrixGoToPage(p)"
+                  [style.background]="thinkerMatrixCurrentPage === p
+              ? 'linear-gradient(135deg,#2563EB,#1d4ed8)' : 'transparent'"
+                  [style.color]="thinkerMatrixCurrentPage === p
+              ? '#fff' : '#7B90B8'"
+                  [style.border]="thinkerMatrixCurrentPage === p
+              ? 'none' : '1px solid rgba(255,255,255,0.1)'"
+                  style="width:34px;height:34px;border-radius:8px;
+                   cursor:pointer;font-size:13px;font-weight:600;
+                   display:flex;align-items:center;justify-content:center;
+                   transition:all 0.2s ease">
+            {{ p }}
+          </button>
+        </ng-container>
+
+        <button
+          (click)="thinkerMatrixGoToPage(thinkerMatrixCurrentPage + 1)"
+          [disabled]="thinkerMatrixCurrentPage === thinkerMatrixTotalPages"
+          [style.opacity]="thinkerMatrixCurrentPage === thinkerMatrixTotalPages
+        ? '0.4' : '1'"
+          style="width:34px;height:34px;border-radius:8px;
+             background:transparent;
+             border:1px solid rgba(255,255,255,0.1);
+             color:#7B90B8;cursor:pointer;
+             display:flex;align-items:center;justify-content:center;
+             transition:all 0.2s ease">
+          <span class="material-icons" style="font-size:18px">
+            chevron_right
+          </span>
+        </button>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:12px;flex-shrink:0">
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="color:#7B90B8;font-size:12px;white-space:nowrap">
+            Rows per page
+          </span>
+          <select
+            [(ngModel)]="thinkerMatrixPageSize"
+            (change)="thinkerMatrixCurrentPage = 1"
+            style="background:#0D1628;
+               border:1px solid rgba(0,212,255,0.15);
+               border-radius:6px;color:#E8F0FE;
+               font-size:12px;padding:6px 10px;
+               cursor:pointer;outline:none">
+            <option [value]="5">5</option>
+            <option [value]="10">10</option>
+            <option [value]="15">15</option>
+            <option [value]="20">20</option>
+          </select>
+        </div>
+
+        <button
+          (click)="onExportThinkerMatrix()"
+          style="display:flex;align-items:center;gap:8px;
+             background:transparent;
+             border:1px solid rgba(0,212,255,0.25);
+             border-radius:10px;padding:8px 18px;
+             color:#00D4FF;font-size:13px;font-weight:600;
+             cursor:pointer;white-space:nowrap;
+             transition:all 0.2s ease"
+          (mouseenter)="$any($event.currentTarget).style.background=
+        'rgba(0,212,255,0.08)';
+        $any($event.currentTarget).style.borderColor='rgba(0,212,255,0.5)'"
+          (mouseleave)="$any($event.currentTarget).style.background='transparent';
+        $any($event.currentTarget).style.borderColor='rgba(0,212,255,0.25)'">
+          <span class="material-icons" style="font-size:16px">download</span>
+          Export
+        </button>
+      </div>
+    </div>
 
     <!-- Legend (identical) -->
     <div style="
